@@ -1,9 +1,8 @@
-﻿namespace FootballManager.Application.Models.Identity;
+namespace FootballManager.Application.Models.Identity;
 
 public class AuthResponse
 {
-    public string Id { get; set; }
-    public string UserName { get; set; }
-    public string Email { get; set; }
-    public string Token { get; set; }
+    public bool IsAuthSuccessful { get; set; }
+    public string? ErrorMessage { get; set; }
+    public string? Token { get; set; }
 }

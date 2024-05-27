@@ -1,7 +1,6 @@
-﻿using FootballManager.Application.Contracts.Identity;
+using FootballManager.Application.Contracts.Identity;
 using FootballManager.Application.Models.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ServiceResult;
 using ServiceResult.ApiExtensions;
 
 namespace FootballManager.API.Controllers;
@@ -22,6 +21,14 @@ public class AccountController : ControllerBase
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {
         var result = await _accountService.Register(request);
+
+        return this.FromResult(result);
+    }
+
+    [HttpPost("Login")]
+    public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
+    {
+        var result = await _accountService.Login(request);
 
         return this.FromResult(result);
     }

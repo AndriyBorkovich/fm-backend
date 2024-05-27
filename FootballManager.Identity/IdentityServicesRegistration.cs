@@ -1,4 +1,5 @@
-﻿using FootballManager.Application.Contracts.Identity;
+using FootballManager.Application.Contracts.Identity;
+using FootballManager.Identity.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FootballManager.Identity;

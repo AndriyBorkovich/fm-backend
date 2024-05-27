@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FootballManager.Application.Contracts.Email;
 using FootballManager.Application.Contracts.Logging;
 using FootballManager.Application.Contracts.Persistence;
@@ -14,34 +14,17 @@ using ServiceResult;
 
 namespace FootballManager.Application.Features.Match.Commands.SimulateMatch;
 
-public class SimulateMatchCommandHandler : IRequestHandler<SimulateMatchCommand, Result<MatchResultDTO>>
+public class SimulateMatchCommandHandler(
+    IClubRepository clubRepository,
+    IMatchRepository matchRepository,
+    IMapper mapper,
+    IValidator<SimulateMatchCommand> validator,
+    IEmailSender emailSender,
+    IAppLogger<SimulateMatchCommandHandler> logger) : IRequestHandler<SimulateMatchCommand, Result<MatchResultDTO>>
 {
-    private readonly IClubRepository _clubRepository;
-    private readonly IMatchRepository _matchRepository;
-    private readonly IEmailSender _emailSender;
-    private readonly IAppLogger<SimulateMatchCommandHandler> _logger;
-    private readonly IMapper _mapper;
-    private readonly IValidator<SimulateMatchCommand> _validator;
-
-    public SimulateMatchCommandHandler(
-        IClubRepository clubRepository,
-        IMatchRepository matchRepository,
-        IMapper mapper,
-        IValidator<SimulateMatchCommand> validator,
-        IEmailSender emailSender,
-        IAppLogger<SimulateMatchCommandHandler> logger)
-    {
-        _clubRepository = clubRepository;
-        _matchRepository = matchRepository;
-        _mapper = mapper;
-        _validator = validator;
-        _emailSender = emailSender;
-        _logger = logger;
-    }
-
     public async Task<Result<MatchResultDTO>> Handle(SimulateMatchCommand request, CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
             return new InvalidResult<MatchResultDTO>(validationResult.Errors.ToResponse());
@@ -67,11 +50,11 @@ public class SimulateMatchCommandHandler : IRequestHandler<SimulateMatchCommand,
             Players = allPlayers
         };
 
-        await _matchRepository.InsertAsync(match);
+        await matchRepository.InsertAsync(match);
 
-        var result = _mapper.Map<MatchResultDTO>(match);
+        var result = mapper.Map<MatchResultDTO>(match);
 
-        await _matchRepository.UpdateAsync(match);
+        await matchRepository.UpdateAsync(match);
 
         // send email to the current logged user
         // TODO: change email
@@ -83,14 +66,14 @@ public class SimulateMatchCommandHandler : IRequestHandler<SimulateMatchCommand,
             Subject = "Match result"
         };
 
-        var emailResult = await _emailSender.SendEmail(email);
+        var emailResult = await emailSender.SendEmail(email);
         if (!emailResult)
         {
-            _logger.LogWarning($"Failed to send email to {email.To}");
+            logger.LogWarning($"Failed to send email to {email.To}");
         }
         else
         {
-            _logger.LogInformation("Email sent successfully");
+            logger.LogInformation("Email sent successfully");
         }
 
         return new SuccessResult<MatchResultDTO>(result);
@@ -98,7 +81,7 @@ public class SimulateMatchCommandHandler : IRequestHandler<SimulateMatchCommand,
 
     private async Task<List<Domain.Entities.Player>> GetRandomPlayers(int clubId, int count)
     {
-        var players = (await _clubRepository.GetClubsWithPlayersInfo()
+        var players = (await clubRepository.GetClubsWithPlayersInfo()
                                         .FirstOrDefaultAsync(c => c.Id == clubId))?.Players;
 
         // Shuffle the players and select the first 'count' players

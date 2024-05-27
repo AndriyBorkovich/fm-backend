@@ -1,7 +1,11 @@
-﻿namespace FootballManager.Application.Models.Identity;
+using System.ComponentModel.DataAnnotations;
+
+namespace FootballManager.Application.Models.Identity;
 
 public class AuthRequest
 {
-    public string Email { get; set; }
+    [Required]
+    public string Username { get; set; }
+    [Required]
     public string Password { get; set; }
 }

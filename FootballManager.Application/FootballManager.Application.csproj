@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -24,7 +24,6 @@
     <ItemGroup>
       <Folder Include="Features\Coach\Commands\" />
       <Folder Include="Features\Coach\Queries\" />
-      <Folder Include="Features\Match\Queries\" />
       <Folder Include="Helpers\" />
     </ItemGroup>
 

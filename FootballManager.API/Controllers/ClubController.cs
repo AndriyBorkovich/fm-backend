@@ -1,9 +1,10 @@
-﻿using FootballManager.Application.Features.Club.Commands.Create;
+using FootballManager.Application.Features.Club.Commands.Create;
 using FootballManager.Application.Features.Club.Queries.GetAllClubs;
 using FootballManager.Application.Features.Club.Queries.GetClubWithMatchesHistory;
 using FootballManager.Application.Features.Player.Queries.GetAllPlayers;
 using FootballManager.Application.Features.Shared.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceResult.ApiExtensions;
 
@@ -11,6 +12,7 @@ namespace FootballManager.API.Controllers;
 
 /// <inheritdoc />
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class ClubController : ControllerBase
 {

@@ -37,6 +37,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<FootballManagerContext>();
 builder.Services.AddIdentityServices();
 
+builder.Services.AddJwtAuth(builder.Configuration);
+
 builder.Services.AddPersistenceServices(builder.Configuration);
 
 // configure API infrastructure
@@ -54,12 +56,13 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
     // test example  bombardier -c 1 -n 100 http://localhost:5285/api/Player/GetAll
     rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     rateLimiterOptions.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
-        httpContext => RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(), factory: _ => new FixedWindowRateLimiterOptions {
-        AutoReplenishment = true,
-        PermitLimit = 20,
-        QueueLimit = 0,
-        Window = TimeSpan.FromMinutes(1)
-    }));
+        httpContext => RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(), factory: _ => new FixedWindowRateLimiterOptions
+        {
+            AutoReplenishment = true,
+            PermitLimit = 20,
+            QueueLimit = 0,
+            Window = TimeSpan.FromMinutes(1)
+        }));
 });
 
 // TODO: add double timespan
@@ -79,11 +82,11 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 var app = builder.Build();
 
 app.UseExceptionHandler();
+
 // using var container = app.Services.CreateScope();
 // var dbContext = container.ServiceProvider.GetService<FootballManagerContext>();
 // dbContext!.Database.Migrate();
 
-// Configure the HTTP request pipeline.
 app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment())
@@ -93,6 +96,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,6 +1,7 @@
-﻿using FootballManager.Application.Features.Match.Commands.SimulateMatch;
+using FootballManager.Application.Features.Match.Commands.SimulateMatch;
 using FootballManager.Application.Features.Shared.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceResult.ApiExtensions;
 
@@ -8,6 +9,7 @@ namespace FootballManager.API.Controllers;
 
 /// <inheritdoc />
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class MatchController : ControllerBase
 {

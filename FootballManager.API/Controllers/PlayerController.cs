@@ -1,9 +1,10 @@
-﻿using FootballManager.Application.Features.Player.Commands.CreatePlayer;
+using FootballManager.Application.Features.Player.Commands.CreatePlayer;
 using FootballManager.Application.Features.Player.Commands.DeletePlayer;
 using FootballManager.Application.Features.Player.Commands.UpdatePlayer;
 using FootballManager.Application.Features.Player.Queries.GetAllPlayers;
 using FootballManager.Application.Features.Player.Queries.GetPlayerWithStats;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceResult.ApiExtensions;
 
@@ -11,6 +12,7 @@ namespace FootballManager.API.Controllers;
 
 /// <inheritdoc />
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class PlayerController : Controller
 {
@@ -60,7 +62,7 @@ public class PlayerController : Controller
     {
         var result = await _mediator.Send(command);
 
-        return this.FromResult(result);;
+        return this.FromResult(result);
     }
 
     /// <summary>
