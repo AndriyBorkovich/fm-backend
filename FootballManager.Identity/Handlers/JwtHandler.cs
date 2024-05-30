@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FootballManager.Identity.Jwt
+namespace FootballManager.Identity.Handlers
 {
     public class JwtHandler
     {

@@ -1,5 +1,5 @@
 using FootballManager.Application.Contracts.Identity;
-using FootballManager.Identity.Jwt;
+using FootballManager.Identity.Handlers;
 using FootballManager.Identity.Services;
 using Microsoft.Extensions.DependencyInjection;
 

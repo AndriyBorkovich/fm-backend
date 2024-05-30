@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using FootballManager.Application.Contracts.Identity;
 using FootballManager.Application.Models.Identity;
 using FootballManager.Domain.Entities;
-using FootballManager.Identity.Jwt;
+using FootballManager.Identity.Handlers;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using ServiceResult;
@@ -37,7 +37,10 @@ public class AccountService : IAccountService
             });
         }
 
-        return new SuccessResult<RegistrationResponse>(new RegistrationResponse() { IsSuccessfulRegistration = true });
+        return new SuccessResult<RegistrationResponse>(new RegistrationResponse()
+        {
+            IsSuccessfulRegistration = true
+        });
     }
 
     public async Task<Result<AuthResponse>> Login(AuthRequest request)

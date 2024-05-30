@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using FluentValidation;
 using FootballManager.Application.Features.Match.Commands.Simulate;
 using FootballManager.Application.Features.Player.Commands.Create;
@@ -20,10 +20,15 @@ public static class ApplicationServiceRegistration
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+        AddValidators(services);
+
+        return services;
+    }
+
+    private static void AddValidators(IServiceCollection services)
+    {
         services.AddScoped<IValidator<CreatePlayerCommand>, CreatePlayerCommandValidator>();
         services.AddScoped<IValidator<UpdatePlayerCommand>, UpdatePlayerCommandValidator>();
         services.AddScoped<IValidator<SimulateMatchCommand>, SimulateMatchCommandValidator>();
-
-        return services;
     }
 }
