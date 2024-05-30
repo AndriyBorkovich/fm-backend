@@ -1,7 +1,7 @@
-using FootballManager.Application.Features.Player.Commands.CreatePlayer;
-using FootballManager.Application.Features.Player.Commands.DeletePlayer;
-using FootballManager.Application.Features.Player.Commands.UpdatePlayer;
-using FootballManager.Application.Features.Player.Queries.GetAllPlayers;
+using FootballManager.Application.Features.Player.Commands.Create;
+using FootballManager.Application.Features.Player.Commands.Delete;
+using FootballManager.Application.Features.Player.Commands.Update;
+using FootballManager.Application.Features.Player.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Player.Queries.GetPlayerWithStats;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +28,7 @@ public class PlayerController : Controller
     /// <returns>List of players short info (name, age, position)</returns>
     [HttpGet("GetAll")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<PlayerShortInfoDTO>>> GetAll()
+    public async Task<ActionResult<List<GetAllPlayersShortInfoResponse>>> GetAll()
     {
         var result = await _mediator.Send(new GetAllPlayersQuery());
 
@@ -43,7 +43,7 @@ public class PlayerController : Controller
     [HttpGet("GetById/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(type: typeof(ActionResult),StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<PlayerStatisticDTO>> GetById(int id)
+    public async Task<ActionResult<GetPlayerWithStatsResponse>> GetById(int id)
     {
         var result = await _mediator.Send(new GetPlayerWithStatsQuery(id));
 

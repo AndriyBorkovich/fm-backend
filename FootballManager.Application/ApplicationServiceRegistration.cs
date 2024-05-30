@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using FluentValidation;
-using FootballManager.Application.Features.Match.Commands.SimulateMatch;
-using FootballManager.Application.Features.Player.Commands.CreatePlayer;
-using FootballManager.Application.Features.Player.Commands.UpdatePlayer;
+using FootballManager.Application.Features.Match.Commands.Simulate;
+using FootballManager.Application.Features.Player.Commands.Create;
+using FootballManager.Application.Features.Player.Commands.Update;
 using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;

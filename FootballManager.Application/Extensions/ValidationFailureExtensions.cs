@@ -1,4 +1,3 @@
-using System.Text;
 using FluentValidation.Results;
 
 namespace FootballManager.Application.Extensions;

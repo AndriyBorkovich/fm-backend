@@ -1,8 +1,8 @@
 using FootballManager.Application.Features.Club.Commands.Create;
-using FootballManager.Application.Features.Club.Queries.GetAllClubs;
-using FootballManager.Application.Features.Club.Queries.GetClubWithMatchesHistory;
-using FootballManager.Application.Features.Player.Queries.GetAllPlayers;
-using FootballManager.Application.Features.Shared.DTOs;
+using FootballManager.Application.Features.Club.Queries.GetAllShortInfo;
+using FootballManager.Application.Features.Club.Queries.GetWithMatchesHistory;
+using FootballManager.Application.Features.Player.Queries.GetAllShortInfo;
+using FootballManager.Application.Features.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,11 +26,11 @@ public class ClubController : ControllerBase
     /// <summary>
     /// Get clubs with info about their players
     /// </summary>
-    /// <see cref="ClubShortInfoDTO"/>
-    /// <seealso cref="PlayerShortInfoDTO"/>
+    /// <see cref="GetAllClubShortInfoResponse"/>
+    /// <seealso cref="GetAllPlayersShortInfoResponse"/>
     /// <returns>Info about club and it's players</returns>
     [HttpGet("GetAllClubs")]
-    public async Task<ActionResult<List<ClubShortInfoDTO>>> GetAll()
+    public async Task<ActionResult<List<GetAllClubShortInfoResponse>>> GetAll()
     {
         var result = await _mediator.Send(new GetAllClubsQuery());
         return this.FromResult(result);
@@ -40,11 +40,11 @@ public class ClubController : ControllerBase
     /// Get club info about played matches
     /// </summary>
     /// <param name="id">Club ID</param>
-    /// <see cref="ClubWithMatchHistoryDTO"/>
-    /// <seealso cref="MatchResultDTO"/>
+    /// <see cref="GetClubWithMatchHistoryResponse"/>
+    /// <seealso cref="MatchResultResponse"/>
     /// <returns>Info about club's matches</returns>
     [HttpGet("GetByIdWithMatchHistory/{id:int}")]
-    public async Task<ActionResult<ClubWithMatchHistoryDTO>> GetByIdWithMatchHistory(int id)
+    public async Task<ActionResult<GetClubWithMatchHistoryResponse>> GetByIdWithMatchHistory(int id)
     {
         var result = await _mediator.Send(new GetClubWithMatchHistoryQuery(id));
 

@@ -1,6 +1,6 @@
 ﻿using FootballManager.Application.Contracts.Logging;
 using FootballManager.Application.Contracts.Persistence;
-using FootballManager.Application.Features.Player.Queries.GetAllPlayers;
+using FootballManager.Application.Features.Player.Queries.GetAllShortInfo;
 using FootballManager.Application.UnitTests.Mocks;
 using MapsterMapper;
 using Moq;
@@ -28,7 +28,7 @@ public class GetAllPlayersQueryHandlerTests
         var result = await handler.Handle(new GetAllPlayersQuery(), CancellationToken.None);
 
         var resultList = result.Data;
-        resultList.ShouldBeOfType<List<PlayerShortInfoDTO>>();
+        resultList.ShouldBeOfType<List<GetAllPlayersShortInfoResponse>>();
         resultList.Count.ShouldBe(3);
     }
 }

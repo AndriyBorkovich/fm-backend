@@ -22,8 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Coach\Commands\" />
       <Folder Include="Features\Coach\Queries\" />
+      <Folder Include="Features\Match\Queries\" />
       <Folder Include="Helpers\" />
     </ItemGroup>
 

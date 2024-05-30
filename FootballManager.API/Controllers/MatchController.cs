@@ -1,5 +1,5 @@
-using FootballManager.Application.Features.Match.Commands.SimulateMatch;
-using FootballManager.Application.Features.Shared.DTOs;
+using FootballManager.Application.Features.Match.Commands.Simulate;
+using FootballManager.Application.Features.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +26,7 @@ public class MatchController : ControllerBase
     /// <param name="command">IDs of home and away teams</param>
     /// <returns>Score of the match</returns>
     [HttpPost("SimulateMatch")]
-    public async Task<ActionResult<MatchResultDTO>> SimulateMatch(SimulateMatchCommand command)
+    public async Task<ActionResult<MatchResultResponse>> SimulateMatch(SimulateMatchCommand command)
     {
         var result = await _mediator.Send(command);
 
