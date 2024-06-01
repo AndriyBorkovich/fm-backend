@@ -1,4 +1,5 @@
 using FootballManager.Application.Contracts.Persistence;
+using FootballManager.Application.Features.Shared.Responses;
 using MapsterMapper;
 using MediatR;
 using ServiceResult;
@@ -7,26 +8,25 @@ namespace FootballManager.Application.Features.Club.Queries.GetWithMatchesHistor
 
 public record GetClubWithMatchHistoryQuery(int Id) : IRequest<Result<GetClubWithMatchHistoryResponse>>;
 
-public class GetClubWithMatchHistoryQueryHandler : IRequestHandler<GetClubWithMatchHistoryQuery, Result<GetClubWithMatchHistoryResponse>>
+public class GetClubWithMatchHistoryResponse
 {
-    private readonly IClubRepository _clubRepository;
-    private readonly IMapper _mapper;
+    public List<MatchResultResponse> HomeMatchesResults { get; set; }
+    public List<MatchResultResponse> AwayMatchesResults { get; set; }
+}
 
-    public GetClubWithMatchHistoryQueryHandler(IClubRepository clubRepository, IMapper mapper)
-    {
-        _clubRepository = clubRepository;
-        _mapper = mapper;
-    }
 
+public class GetClubWithMatchHistoryQueryHandler(IClubRepository repository, IMapper mapper)
+    : IRequestHandler<GetClubWithMatchHistoryQuery, Result<GetClubWithMatchHistoryResponse>>
+{
     public async Task<Result<GetClubWithMatchHistoryResponse>> Handle(GetClubWithMatchHistoryQuery request, CancellationToken cancellationToken)
     {
-        var club = await _clubRepository.GetClubWithMatchHistory(request.Id);
+        var club = await repository.GetClubWithMatchHistory(request.Id);
         if (club is null)
         {
-            return new NotFoundResult<GetClubWithMatchHistoryResponse>($"Club with ID not {request.Id} found");
+            return new NotFoundResult<GetClubWithMatchHistoryResponse>($"Club with ID {request.Id} not found");
         }
 
-        var result = _mapper.Map<GetClubWithMatchHistoryResponse>(club);
+        var result = mapper.Map<GetClubWithMatchHistoryResponse>(club);
 
         return new SuccessResult<GetClubWithMatchHistoryResponse>(result);
     }

@@ -1,4 +1,4 @@
-﻿using FootballManager.Application.Contracts.Persistence;
+using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Domain.Entities;
 using FootballManager.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -19,23 +19,6 @@ public class ClubRepository : GenericRepository<Club>, IClubRepository
     public async Task<Club?> GetClubWithMatchHistory(int clubId)
     {
         // TODO: rewrite to select
-        /*return await GetAll()
-                    .AsSplitQuery()
-                    .Include(c => c.HomeMatches)
-                        .ThenInclude(m => m.HomeTeam)
-                    .Include(c => c.HomeMatches)
-                        .ThenInclude(m => m.AwayTeam)
-                    .Include(c => c.HomeMatches)
-                        .ThenInclude(m => m.Goals)
-                            .ThenInclude(g => g.Scorer)
-                    .Include(c => c.AwayMatches)
-                        .ThenInclude(m => m.HomeTeam)
-                    .Include(c => c.AwayMatches)
-                        .ThenInclude(m => m.AwayTeam)
-                    .Include(c => c.AwayMatches)
-                        .ThenInclude(m => m.Goals)
-                            .ThenInclude(g => g.Scorer)
-                    .FirstOrDefaultAsync(c => c.Id == clubId);*/
         return await GetAll()
                     .AsNoTracking()
                     .AsSplitQuery()

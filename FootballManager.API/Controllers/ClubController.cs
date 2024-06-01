@@ -24,15 +24,14 @@ public class ClubController : ControllerBase
     }
 
     /// <summary>
-    /// Get clubs with info about their players
+    /// Get clubs' short info
     /// </summary>
-    /// <see cref="GetAllClubShortInfoResponse"/>
-    /// <seealso cref="GetAllPlayersShortInfoResponse"/>
-    /// <returns>Info about club and it's players</returns>
-    [HttpGet("GetAllClubs")]
-    public async Task<ActionResult<List<GetAllClubShortInfoResponse>>> GetAll()
+    /// <see cref="GetAllClubsShortInfoResponse"/>
+    /// <returns>Info about club including name, type, stadium and coach info, players count</returns>
+    [HttpGet("GetAllShortInfo")]
+    public async Task<ActionResult<List<GetAllClubsShortInfoResponse>>> GetAll()
     {
-        var result = await _mediator.Send(new GetAllClubsQuery());
+        var result = await _mediator.Send(new GetAllClubsShortInfoQuery());
         return this.FromResult(result);
     }
 
@@ -43,7 +42,7 @@ public class ClubController : ControllerBase
     /// <see cref="GetClubWithMatchHistoryResponse"/>
     /// <seealso cref="MatchResultResponse"/>
     /// <returns>Info about club's matches</returns>
-    [HttpGet("GetByIdWithMatchHistory/{id:int}")]
+    [HttpGet("GetWithMatchHistory/{id:int}")]
     public async Task<ActionResult<GetClubWithMatchHistoryResponse>> GetByIdWithMatchHistory(int id)
     {
         var result = await _mediator.Send(new GetClubWithMatchHistoryQuery(id));
