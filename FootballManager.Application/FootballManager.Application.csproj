@@ -24,7 +24,7 @@
     <ItemGroup>
       <Folder Include="Features\Coach\Queries\" />
       <Folder Include="Features\Match\Queries\" />
-      <Folder Include="Helpers\" />
+      <Folder Include="Utilities\" />
     </ItemGroup>
 
 </Project>

@@ -16,24 +16,6 @@ public class ClubRepository : GenericRepository<Club>, IClubRepository
         return GetAll()
             .Include(c => c.Players);
     }
-    public async Task<Club?> GetClubWithMatchHistory(int clubId)
-    {
-        // TODO: rewrite to select
-        return await GetAll()
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .Include(c => c.HomeMatches)
-                        .ThenInclude(m => m.AwayTeam)
-                    .Include(c => c.HomeMatches)
-                        .ThenInclude(m => m.Goals)
-                            .ThenInclude(g => g.Scorer)
-                    .Include(c => c.AwayMatches)
-                        .ThenInclude(m => m.Goals)
-                            .ThenInclude(g => g.Scorer)
-                    .Include(c => c.AwayMatches)
-                            .ThenInclude(m => m.HomeTeam)
-                    .FirstOrDefaultAsync(c => c.Id == clubId);
-    }
 
     public async Task<bool> PlayerExistsInClub(int playerId, int clubId)
     {

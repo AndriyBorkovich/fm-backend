@@ -1,7 +1,6 @@
 using FootballManager.Application.Features.Club.Commands.Create;
 using FootballManager.Application.Features.Club.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Club.Queries.GetWithMatchesHistory;
-using FootballManager.Application.Features.Player.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -39,11 +38,10 @@ public class ClubController : ControllerBase
     /// Get club info about played matches
     /// </summary>
     /// <param name="id">Club ID</param>
-    /// <see cref="GetClubWithMatchHistoryResponse"/>
-    /// <seealso cref="MatchResultResponse"/>
+    /// <see cref="MatchResultResponse"/>
     /// <returns>Info about club's matches</returns>
-    [HttpGet("GetWithMatchHistory/{id:int}")]
-    public async Task<ActionResult<GetClubWithMatchHistoryResponse>> GetByIdWithMatchHistory(int id)
+    [HttpGet("GetMatchHistory/{id:int}")]
+    public async Task<ActionResult<List<MatchResultResponse>>> GetByIdWithMatchHistory(int id)
     {
         var result = await _mediator.Send(new GetClubWithMatchHistoryQuery(id));
 

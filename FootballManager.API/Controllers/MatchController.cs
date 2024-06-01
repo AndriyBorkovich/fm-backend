@@ -25,7 +25,7 @@ public class MatchController : ControllerBase
     /// </summary>
     /// <param name="command">IDs of home and away teams</param>
     /// <returns>Score of the match</returns>
-    [HttpPost("SimulateMatch")]
+    [HttpPost("Simulate")]
     public async Task<ActionResult<MatchResultResponse>> SimulateMatch(SimulateMatchCommand command)
     {
         var result = await _mediator.Send(command);
