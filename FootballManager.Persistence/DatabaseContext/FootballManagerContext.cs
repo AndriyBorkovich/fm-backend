@@ -1,4 +1,5 @@
-﻿using FootballManager.Domain.Entities;
+using FootballManager.Domain.Entities;
+using FootballManager.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ public class FootballManagerContext : IdentityDbContext<AppUser, IdentityRole<st
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(FootballManagerContext).Assembly);
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
         modelBuilder.Entity<Match>()
             .HasOne(m => m.HomeTeam)

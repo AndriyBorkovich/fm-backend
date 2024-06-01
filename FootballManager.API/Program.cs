@@ -39,8 +39,11 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddIdentity<AppUser, IdentityRole>()
-    .AddEntityFrameworkStores<FootballManagerContext>();
+builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+{
+    opt.Password.RequiredLength = 7;
+    opt.User.RequireUniqueEmail = true;
+}).AddEntityFrameworkStores<FootballManagerContext>();
 builder.Services.AddIdentityServices();
 
 builder.Services.AddJwtAuth(builder.Configuration);

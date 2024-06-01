@@ -37,6 +37,8 @@ public class AccountService : IAccountService
             });
         }
 
+        await _userManager.AddToRoleAsync(user, Roles.Admin);
+
         return new SuccessResult<RegistrationResponse>(new RegistrationResponse()
         {
             IsSuccessfulRegistration = true
@@ -56,7 +58,7 @@ public class AccountService : IAccountService
         }
 
         var signingCredentials = _jwtHandler.GetSigningCredentials();
-        var claims = _jwtHandler.GetClaims(user);
+        var claims = await _jwtHandler.GetClaims(user);
         var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
         var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 

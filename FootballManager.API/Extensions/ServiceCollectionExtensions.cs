@@ -12,7 +12,7 @@ namespace FootballManager.API.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// configure Swagger
+    /// Configure Swagger
     /// </summary>
     /// <param name="services"></param>
     public static void AddSwagger(this IServiceCollection services)

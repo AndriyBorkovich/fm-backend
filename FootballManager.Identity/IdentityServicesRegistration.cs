@@ -9,7 +9,7 @@ public static class IdentityServicesRegistration
 {
     public static IServiceCollection AddIdentityServices(this IServiceCollection services)
     {
-        services.AddSingleton<JwtHandler>();
+        services.AddScoped<JwtHandler>();
         services.AddScoped<IAccountService, AccountService>();
 
         return services;
