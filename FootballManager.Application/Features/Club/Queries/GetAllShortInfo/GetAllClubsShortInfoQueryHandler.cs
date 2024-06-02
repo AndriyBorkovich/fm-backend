@@ -1,4 +1,6 @@
 using FootballManager.Application.Contracts.Persistence;
+using FootballManager.Application.Extensions;
+using FootballManager.Application.Utilities;
 using FootballManager.Domain.Enums;
 using MapsterMapper;
 using MediatR;
@@ -9,7 +11,7 @@ using PlayerEntity = FootballManager.Domain.Entities.Player;
 
 namespace FootballManager.Application.Features.Club.Queries.GetAllShortInfo;
 
-public record GetAllClubsShortInfoQuery : IRequest<Result<List<GetAllClubsShortInfoResponse>>>;
+public record GetAllClubsShortInfoQuery(Pagination Pagination) : IRequest<Result<ListResponse<GetAllClubsShortInfoResponse>>>;
 
 public record GetAllClubsShortInfoResponse
 (
@@ -22,19 +24,21 @@ public record GetAllClubsShortInfoResponse
 );
 
 public class GetAllClubsShortInfoQueryHandler(
-    IClubRepository repository, IMapper mapper)
-        : IRequestHandler<GetAllClubsShortInfoQuery, Result<List<GetAllClubsShortInfoResponse>>>
+    IClubRepository repository,
+    IMapper mapper)
+        : IRequestHandler<GetAllClubsShortInfoQuery, Result<ListResponse<GetAllClubsShortInfoResponse>>>
 {
-    public async Task<Result<List<GetAllClubsShortInfoResponse>>> Handle(GetAllClubsShortInfoQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ListResponse<GetAllClubsShortInfoResponse>>> Handle(GetAllClubsShortInfoQuery request, CancellationToken cancellationToken)
     {
-        var clubs = await GetData(cancellationToken);
+        var clubsData = await GetData(request.Pagination, cancellationToken);
 
-        var result = mapper.Map<List<GetAllClubsShortInfoResponse>>(clubs);
+        var result = mapper.Map<List<GetAllClubsShortInfoResponse>>(clubsData.List);
 
-        return new SuccessResult<List<GetAllClubsShortInfoResponse>>(result);
+        return new SuccessResult<ListResponse<GetAllClubsShortInfoResponse>>(
+            new ListResponse<GetAllClubsShortInfoResponse>(result, clubsData.Count));
     }
 
-    private async Task<List<ClubEntity>> GetData(CancellationToken cancellationToken)
+    private async Task<(List<ClubEntity> List, int Count)> GetData(Pagination pagination, CancellationToken cancellationToken)
     {
         return await repository
                         .GetAll()
@@ -50,6 +54,6 @@ public class GetAllClubsShortInfoQueryHandler(
                                 Id = p.Id
                             }).ToList()
                         })
-                        .ToListAsync(cancellationToken);
+                        .Page(pagination);
     }
 }

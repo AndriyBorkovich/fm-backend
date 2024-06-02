@@ -2,6 +2,7 @@ using FootballManager.Application.Features.Club.Commands.Create;
 using FootballManager.Application.Features.Club.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Club.Queries.GetWithMatchesHistory;
 using FootballManager.Application.Features.Shared.Responses;
+using FootballManager.Application.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,10 @@ public class ClubController(IMediator mediator) : ControllerBase
     /// <see cref="GetAllClubsShortInfoResponse"/>
     /// <returns>Info about club including name, type, stadium and coach info, players count</returns>
     [HttpGet("GetAllShortInfo")]
-    public async Task<ActionResult<List<GetAllClubsShortInfoResponse>>> GetAll()
+    public async Task<ActionResult<ListResponse<GetAllClubsShortInfoResponse>>> GetAll(
+        [FromQuery] GetAllClubsShortInfoQuery query)
     {
-        var result = await mediator.Send(new GetAllClubsShortInfoQuery());
+        var result = await mediator.Send(query);
         return this.FromResult(result);
     }
 

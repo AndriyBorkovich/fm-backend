@@ -79,6 +79,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("All");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -91,7 +93,5 @@ app.MapHealthChecks("health", new HealthCheckOptions()
 });
 
 app.MapControllers();
-
-app.UseCors("All");
 
 app.Run();
