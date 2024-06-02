@@ -11,15 +11,8 @@ namespace FootballManager.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [ApiController]
-public class MatchController : ControllerBase
+public class MatchController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public MatchController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     /// <summary>
     /// Simulate match between two teams
     /// </summary>
@@ -28,7 +21,7 @@ public class MatchController : ControllerBase
     [HttpPost("Simulate")]
     public async Task<ActionResult<MatchResultResponse>> SimulateMatch(SimulateMatchCommand command)
     {
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return this.FromResult(result);
     }

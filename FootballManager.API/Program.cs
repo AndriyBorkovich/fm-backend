@@ -1,4 +1,3 @@
-using System.Threading.RateLimiting;
 using FootballManager.API.Extensions;
 using FootballManager.API.HealthChecks;
 using FootballManager.Application;
@@ -60,33 +59,9 @@ builder.Services.AddCors(options =>
         policyConfig => policyConfig.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
-builder.Services.AddRateLimiter(rateLimiterOptions =>
-{
-    // test example  bombardier -c 1 -n 100 http://localhost:5285/api/Player/GetAll
-    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    rateLimiterOptions.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
-        httpContext => RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(), factory: _ => new FixedWindowRateLimiterOptions
-        {
-            AutoReplenishment = true,
-            PermitLimit = 20,
-            QueueLimit = 0,
-            Window = TimeSpan.FromMinutes(1)
-        }));
-});
+builder.Services.AddRateLimiter();
 
-// TODO: add double timespan
-// var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
-//     .WaitAndRetryAsync(3, retryAttempts => TimeSpan.FromSeconds(10));
-//
-// builder.Services.AddHttpClient<ISlackClient, SlackClient>().ConfigureHttpClient(
-//     (serviceProvider, httpClient) =>
-//     {
-//         var httpClientOptions = serviceProvider.GetRequiredService<SlackClientOptions>();
-//
-//         httpClient.BaseAddress = httpClientOptions.BaseAddress;
-//         httpClient.Timeout = httpClientOptions.Timeout;
-//
-//     }).AddPolicyHandler(retryPolicy);
+builder.Services.AddRetryPolicy();
 
 var app = builder.Build();
 

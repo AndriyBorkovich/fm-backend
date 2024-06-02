@@ -14,14 +14,8 @@ namespace FootballManager.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [ApiController]
-public class PlayerController : Controller
+public class PlayerController(IMediator mediator) : Controller
 {
-    private readonly IMediator _mediator;
-    public PlayerController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     /// <summary>
     /// Get all players
     /// </summary>
@@ -30,7 +24,7 @@ public class PlayerController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<GetAllPlayersShortInfoResponse>>> GetAll()
     {
-        var result = await _mediator.Send(new GetAllPlayersQuery());
+        var result = await mediator.Send(new GetAllPlayersQuery());
 
         return this.FromResult(result);
     }
@@ -45,7 +39,7 @@ public class PlayerController : Controller
     [ProducesResponseType(type: typeof(ActionResult),StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetPlayerWithStatsResponse>> GetById(int id)
     {
-        var result = await _mediator.Send(new GetPlayerWithStatsQuery(id));
+        var result = await mediator.Send(new GetPlayerWithStatsQuery(id));
 
         return this.FromResult(result);
     }
@@ -60,7 +54,7 @@ public class PlayerController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create(CreatePlayerCommand command)
     {
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return this.FromResult(result);
     }
@@ -75,7 +69,7 @@ public class PlayerController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Update(UpdatePlayerCommand command)
     {
-        await _mediator.Send(command);
+        await mediator.Send(command);
 
         return NoContent();
     }
@@ -90,7 +84,7 @@ public class PlayerController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Delete(int id)
     {
-        await _mediator.Send(new DeletePlayerCommand(id));
+        await mediator.Send(new DeletePlayerCommand(id));
 
         return NoContent();
     }

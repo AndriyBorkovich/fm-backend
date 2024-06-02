@@ -9,7 +9,7 @@ namespace FootballManager.Persistence.IntegrationTests;
 
 public class FootballManagerDatabaseContextTests
 {
-    private FootballManagerContext _footballManagerContext;
+    private readonly FootballManagerContext _footballManagerContext;
 
     public FootballManagerDatabaseContextTests()
     {
@@ -35,7 +35,10 @@ public class FootballManagerDatabaseContextTests
         // Arrange
         var player = new Player()
         {
-            Id = 1, BirthDay = new DateTime(2001, 12, 2), Name = "Roberto Bagio", Nationality = "Italy"
+            Id = 1,
+            BirthDay = new DateTime(2001, 12, 2),
+            Name = "Roberto Bagio",
+            Nationality = "Italy"
         };
 
         // Act

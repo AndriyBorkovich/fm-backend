@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -83,6 +84,48 @@ public static class ServiceCollectionExtensions
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
                     .GetBytes(jwtSettings.GetSection("securityKey").Value))
             };
+        });
+    }
+
+    /// <summary>
+    /// Add Polly retry policy for some third-party services
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddRetryPolicy(this IServiceCollection services)
+    {
+        // TODO: add double timespan
+        // var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
+        //     .WaitAndRetryAsync(3, retryAttempts => TimeSpan.FromSeconds(10));
+        //
+        // builder.Services.AddHttpClient<ISlackClient, SlackClient>().ConfigureHttpClient(
+        //     (serviceProvider, httpClient) =>
+        //     {
+        //         var httpClientOptions = serviceProvider.GetRequiredService<SlackClientOptions>();
+        //
+        //         httpClient.BaseAddress = httpClientOptions.BaseAddress;
+        //         httpClient.Timeout = httpClientOptions.Timeout;
+        //
+        //     }).AddPolicyHandler(retryPolicy);
+    }
+
+    /// <summary>
+    /// Add rate limit for incoming requests to the API
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddRateLimiter(this IServiceCollection services)
+    {
+        services.AddRateLimiter(rateLimiterOptions =>
+        {
+            // test example  bombardier -c 1 -n 100 http://localhost:5285/api/Player/GetAll
+            rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            rateLimiterOptions.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
+                httpContext => RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(), factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    AutoReplenishment = true,
+                    PermitLimit = 20,
+                    QueueLimit = 0,
+                    Window = TimeSpan.FromMinutes(1)
+                }));
         });
     }
 }

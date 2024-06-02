@@ -13,15 +13,8 @@ namespace FootballManager.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [ApiController]
-public class ClubController : ControllerBase
+public class ClubController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public ClubController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     /// <summary>
     /// Get clubs' short info
     /// </summary>
@@ -30,7 +23,7 @@ public class ClubController : ControllerBase
     [HttpGet("GetAllShortInfo")]
     public async Task<ActionResult<List<GetAllClubsShortInfoResponse>>> GetAll()
     {
-        var result = await _mediator.Send(new GetAllClubsShortInfoQuery());
+        var result = await mediator.Send(new GetAllClubsShortInfoQuery());
         return this.FromResult(result);
     }
 
@@ -43,7 +36,7 @@ public class ClubController : ControllerBase
     [HttpGet("GetMatchHistory/{id:int}")]
     public async Task<ActionResult<List<MatchResultResponse>>> GetByIdWithMatchHistory(int id)
     {
-        var result = await _mediator.Send(new GetClubWithMatchHistoryQuery(id));
+        var result = await mediator.Send(new GetClubWithMatchHistoryQuery(id));
 
         return this.FromResult(result);
     }
@@ -56,7 +49,7 @@ public class ClubController : ControllerBase
     [HttpPost("Create")]
     public async Task<ActionResult<int>> Create(CreateClubCommand command)
     {
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return this.FromResult(result);
     }
