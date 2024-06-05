@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Domain.Common;
 using FootballManager.Persistence.DatabaseContext;
@@ -20,7 +20,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return Context.Set<T>();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public async Task<T> GetByIdAsync(int id)
     {
         return await Context.Set<T>().FindAsync(id);
     }

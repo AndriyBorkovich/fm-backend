@@ -2,7 +2,6 @@ using FluentValidation;
 using FootballManager.Application.Contracts.Email;
 using FootballManager.Application.Contracts.Logging;
 using FootballManager.Application.Contracts.Persistence;
-using FootballManager.Application.Extensions;
 using FootballManager.Application.Features.Shared.Responses;
 using FootballManager.Application.Models.Email;
 using FootballManager.Domain.Entities;
@@ -11,6 +10,8 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ServiceResult;
+using MatchEntity = FootballManager.Domain.Entities.Match;
+using PlayerEntity = FootballManager.Domain.Entities.Player;
 
 namespace FootballManager.Application.Features.Match.Commands.Simulate;
 
@@ -29,11 +30,13 @@ public class SimulateMatchCommandHandler(
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return new InvalidResult<MatchResultResponse>(validationResult.Errors.ToResponse());
+            return new InvalidResult<MatchResultResponse>(validationResult.ToString());
         }
 
-        var homeTeamPlayers = await GetRandomPlayers(request.HomeTeamId, 11);
-        var awayTeamPlayers = await GetRandomPlayers(request.AwayTeamId,11);
+        const int DefaultSquadSize = 11;
+
+        var homeTeamPlayers = await GetRandomPlayers(request.HomeTeamId, DefaultSquadSize);
+        var awayTeamPlayers = await GetRandomPlayers(request.AwayTeamId, DefaultSquadSize);
 
         var matchDate = DateTime.Now.AddDays(new Random().Next(-100, 100));
 
@@ -42,7 +45,7 @@ public class SimulateMatchCommandHandler(
 
         var allPlayers = homeTeamPlayers.Union(awayTeamPlayers).ToList();
 
-        var match = new Domain.Entities.Match
+        var match = new MatchEntity
         {
             HomeTeamId = request.HomeTeamId,
             AwayTeamId = request.AwayTeamId,
@@ -58,30 +61,30 @@ public class SimulateMatchCommandHandler(
 
         await matchRepository.UpdateAsync(match);
 
-        // send email to the current logged user
-        // TODO: change email
-        var email = new EmailMessage()
-        {
-            To = "borkovich25andri@gmail.com",
-            Body =
-                $"Match {result.HomeTeamName} - {result.AwayTeamName} finished with the result {result.HomeTeamGoals}:{result.AwayTeamGoals}",
-            Subject = "Match result"
-        };
+        // TODO: Change library for sending emails
+        //// send email to the current logged user
+        //var email = new EmailMessage()
+        //{
+        //    To = "borkovich25andri@gmail.com",
+        //    Body =
+        //        $"Match {result.HomeTeamName} - {result.AwayTeamName} finished with the result {result.HomeTeamGoals}:{result.AwayTeamGoals}",
+        //    Subject = "Match result"
+        //};
 
-        var emailResult = await emailSender.SendEmail(email);
-        if (!emailResult)
-        {
-            logger.LogWarning($"Failed to send email to {email.To}");
-        }
-        else
-        {
-            logger.LogInformation("Email sent successfully");
-        }
+        //var emailResult = await emailSender.SendEmail(email);
+        //if (!emailResult)
+        //{
+        //    logger.LogWarning($"Failed to send email to {email.To}");
+        //}
+        //else
+        //{
+        //    logger.LogInformation("Email sent successfully");
+        //}
 
         return new SuccessResult<MatchResultResponse>(result);
     }
 
-    private async Task<List<Domain.Entities.Player>> GetRandomPlayers(int clubId, int count)
+    private async Task<List<PlayerEntity>> GetRandomPlayers(int clubId, int count)
     {
         var players = (await clubRepository.GetClubsWithPlayersInfo()
                                         .FirstOrDefaultAsync(c => c.Id == clubId))?.Players;
@@ -93,7 +96,7 @@ public class SimulateMatchCommandHandler(
     }
 
     // Method to generate goals
-    private List<GoalAction> GenerateGoals(List<Domain.Entities.Player> homePlayers, List<Domain.Entities.Player> awayPlayers)
+    private static List<GoalAction> GenerateGoals(List<PlayerEntity> homePlayers, List<PlayerEntity> awayPlayers)
     {
         var goals = new List<GoalAction>();
         var homeProbability = new Random().NextDouble();
@@ -139,7 +142,7 @@ public class SimulateMatchCommandHandler(
                 // Decide if there's an assistant for the goal
                 if (RandomEventOccurred(0.3))
                 {
-                    var assistant = SelectRandomPlayer(awayPlayers);
+                    var assistant = SelectRandomPlayer(awayPlayers.Where(p => p.Id != player.Id));
                     goal.AssistantId = assistant.Id;
                 }
 
@@ -150,7 +153,7 @@ public class SimulateMatchCommandHandler(
         return goals;
     }
 
-    private List<Card> GenerateCards(List<Domain.Entities.Player> homePlayers, List<Domain.Entities.Player> awayPlayers)
+    private static List<Card> GenerateCards(List<PlayerEntity> homePlayers, List<PlayerEntity> awayPlayers)
     {
         var cards = new List<Card>();
 
@@ -192,26 +195,26 @@ public class SimulateMatchCommandHandler(
     }
 
     // Method to generate a random minute for a goal
-    private int GenerateMinute()
+    private static int GenerateMinute()
     {
         return new Random().Next(1, 121);
     }
 
     // Method to select a random player from the given list
-    private Domain.Entities.Player SelectRandomPlayer(IEnumerable<Domain.Entities.Player> players)
+    private static PlayerEntity SelectRandomPlayer(IEnumerable<PlayerEntity> players)
     {
         return players.ElementAt(new Random().Next(players.Count()));
     }
 
     // Method to select a random card type
-    private CardType GetRandomCardType()
+    private static CardType GetRandomCardType()
     {
         var values = Enum.GetValues(typeof(CardType));
         return (CardType)(values.GetValue(new Random().Next(values.Length)) ?? CardType.Yellow);
     }
 
     // Method to simulate a random event based on probability
-    private bool RandomEventOccurred(double probability)
+    private static bool RandomEventOccurred(double probability)
     {
         return new Random().NextDouble() < probability;
     }

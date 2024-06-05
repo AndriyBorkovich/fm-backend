@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FootballManager.Application.Contracts.Logging;
 using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Application.Extensions;
@@ -33,7 +33,7 @@ public class CreatePlayerCommandHandler : IRequestHandler<CreatePlayerCommand, R
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Validation errors", validationResult.Errors);
-            return new InvalidResult<int>(validationResult.Errors.ToResponse());
+            return new InvalidResult<int>(validationResult.ToString());
         }
 
         var playerToCreate = _mapper.Map<Domain.Entities.Player>(request);

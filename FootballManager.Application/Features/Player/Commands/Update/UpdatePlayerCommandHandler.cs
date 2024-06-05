@@ -1,7 +1,6 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FootballManager.Application.Contracts.Logging;
 using FootballManager.Application.Contracts.Persistence;
-using FootballManager.Application.Extensions;
 using MapsterMapper;
 using MediatR;
 using ServiceResult;
@@ -32,11 +31,11 @@ public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand, R
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Validation errors", validationResult.Errors);
-            return new InvalidResult<Unit>(validationResult.Errors.ToResponse());
+            _logger.LogWarning("Validation errors", validationResult.ToString());
+            return new InvalidResult<Unit>(validationResult.ToString());
         }
 
-        var playerToUpdate = await _playerRepository.GetByIdAsync(request.Id);
+        var playerToUpdate = await _playerRepository.GetByIdAsync(request.Id)!;
         _mapper.Map(request, playerToUpdate);
 
         await _playerRepository.UpdateAsync(playerToUpdate);
