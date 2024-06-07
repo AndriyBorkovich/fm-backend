@@ -33,10 +33,8 @@ public class SimulateMatchCommandHandler(
             return new InvalidResult<MatchResultResponse>(validationResult.ToString());
         }
 
-        const int DefaultSquadSize = 11;
-
-        var homeTeamPlayers = await GetRandomPlayers(request.HomeTeamId, DefaultSquadSize);
-        var awayTeamPlayers = await GetRandomPlayers(request.AwayTeamId, DefaultSquadSize);
+        var homeTeamPlayers = await GetRandomPlayers(request.HomeTeamId);
+        var awayTeamPlayers = await GetRandomPlayers(request.AwayTeamId);
 
         var matchDate = DateTime.Now.AddDays(new Random().Next(-100, 100));
 
@@ -84,7 +82,7 @@ public class SimulateMatchCommandHandler(
         return new SuccessResult<MatchResultResponse>(result);
     }
 
-    private async Task<List<PlayerEntity>> GetRandomPlayers(int clubId, int count)
+    private async Task<List<PlayerEntity>> GetRandomPlayers(int clubId, int count = 11)
     {
         var players = (await clubRepository.GetClubsWithPlayersInfo()
                                         .FirstOrDefaultAsync(c => c.Id == clubId))?.Players;

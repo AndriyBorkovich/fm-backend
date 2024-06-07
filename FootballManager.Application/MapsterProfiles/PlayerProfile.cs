@@ -1,4 +1,3 @@
-using FootballManager.Application.Extensions;
 using FootballManager.Application.Features.Player.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Player.Queries.GetPlayerWithStats;
 using FootballManager.Domain.Entities;

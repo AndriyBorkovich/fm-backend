@@ -1,4 +1,4 @@
-﻿using FootballManager.Application.Contracts.Persistence;
+using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Persistence.DatabaseContext;
 using FootballManager.Persistence.Repositories;
 using FootballManager.Persistence.Triggers;
@@ -21,12 +21,19 @@ public static class PersistenceServiceRegistrations
             });
         });
 
+        AddRepositories(services);
+
+        return services;
+    }
+
+    private static void AddRepositories(IServiceCollection services)
+    {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IClubRepository, ClubRepository>();
         services.AddScoped<IGoalActionRepository, GoalActionRepository>();
         services.AddScoped<IMatchRepository, MatchRepository>();
-
-        return services;
+        services.AddScoped<ICoachRepository, CoachRepository>();
+        services.AddScoped<ISeasonRepository, SeasonRepository>();
     }
 }

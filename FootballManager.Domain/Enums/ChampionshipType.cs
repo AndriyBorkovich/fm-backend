@@ -1,8 +1,11 @@
-﻿namespace FootballManager.Domain.Enums;
+namespace FootballManager.Domain.Enums;
 
 public enum ChampionshipType
 {
-    National = 100, // national teams
-    Сlub = 200,
-    Interclub = 300
+    ContinentalForNations = 100, // national teams
+    WorldWideForNations = 200,
+    ContinentalForClubs = 300, // clubs
+    WorldWideForClubs = 400,
+    CoutryLeague = 500,
+    CoutryCup = 600
 }

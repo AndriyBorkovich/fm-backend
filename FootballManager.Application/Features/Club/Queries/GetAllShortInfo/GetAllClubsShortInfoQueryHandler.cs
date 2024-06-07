@@ -54,6 +54,6 @@ public class GetAllClubsShortInfoQueryHandler(
                                 Id = p.Id
                             }).ToList()
                         })
-                        .Page(pagination);
+                        .Page(pagination, cancellationToken);
     }
 }

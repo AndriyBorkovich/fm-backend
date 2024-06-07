@@ -1,25 +1,37 @@
-﻿using FootballManager.Application.Contracts.Persistence;
+using FluentValidation;
+using FootballManager.Application.Contracts.Persistence;
+using FootballManager.Domain.Enums;
 using MapsterMapper;
 using MediatR;
 using ServiceResult;
+using ClubEntity = FootballManager.Domain.Entities.Club;
 
 namespace FootballManager.Application.Features.Club.Commands.Create;
 
-public class CreateClubCommandHandler : IRequestHandler<CreateClubCommand, Result<int>>
+public record CreateClubCommand
+(
+    string Name,
+    string StadiumName,
+    ClubType Type
+) : IRequest<Result<int>>;
+
+public class CreateClubCommandHandler(
+    IValidator<CreateClubCommand> validator,
+    IClubRepository clubRepository,
+    IMapper mapper)
+        : IRequestHandler<CreateClubCommand, Result<int>>
 {
-    private readonly IClubRepository _clubRepository;
-    private readonly IMapper _mapper;
-
-    public CreateClubCommandHandler(IClubRepository clubRepository, IMapper mapper)
-    {
-        _clubRepository = clubRepository;
-        _mapper = mapper;
-    }
-
     public async Task<Result<int>> Handle(CreateClubCommand request, CancellationToken cancellationToken)
     {
-        var club = _mapper.Map<Domain.Entities.Club>(request);
-        await _clubRepository.InsertAsync(club);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return new InvalidResult<int>(validationResult.ToString());
+        }
+
+        var club = mapper.Map<ClubEntity>(request);
+
+        await clubRepository.InsertAsync(club);
 
         return new SuccessResult<int>(club.Id);
     }

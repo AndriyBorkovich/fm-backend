@@ -1,5 +1,8 @@
+using FootballManager.Application.Features.Match.Commands.Schedule;
 using FootballManager.Application.Features.Match.Commands.Simulate;
+using FootballManager.Application.Features.Match.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Shared.Responses;
+using FootballManager.Application.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +22,35 @@ public class MatchController(IMediator mediator) : ControllerBase
     /// <param name="command">IDs of home and away teams</param>
     /// <returns>Score of the match</returns>
     [HttpPost("Simulate")]
-    public async Task<ActionResult<MatchResultResponse>> SimulateMatch(SimulateMatchCommand command)
+    public async Task<ActionResult<MatchResultResponse>> Simulate(SimulateMatchCommand command)
     {
         var result = await mediator.Send(command);
 
         return this.FromResult(result);
+    }
+
+    /// <summary>
+    /// Schedule (create) new match
+    /// </summary>
+    /// <param name="command">Contains data about teams, season, date</param>
+    /// <returns>ID of the created entity</returns>
+    [HttpPost("Schedule")]
+    public async Task<ActionResult<int>> Schedule(ScheduleMatchCommand command)
+    {
+        var result = await mediator.Send(command);
+
+        return this.FromResult(result);
+    }
+
+    /// <summary>
+    /// Get all matches results
+    /// </summary>
+    /// <param name="query">Contains date filters, pagination params</param>
+    /// <returns>List with matches info results</returns>
+    [HttpGet("GetAllShortInfo")]
+    public async Task<ActionResult<ListResponse<GetAllMatchesShortInfoResponse>>> GetAllShortInfo(
+        [FromQuery] GetAllMatchesShortInfoQuery query)
+    {
+        return await mediator.Send(query);
     }
 }

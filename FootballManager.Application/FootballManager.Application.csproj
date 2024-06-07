@@ -26,7 +26,7 @@
 
     <ItemGroup>
       <Folder Include="Features\Coach\Queries\" />
-      <Folder Include="Features\Match\Queries\" />
+      <Folder Include="Features\Match\Queries\GetById\" />
     </ItemGroup>
 
 </Project>

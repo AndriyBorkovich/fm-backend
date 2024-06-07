@@ -1,5 +1,8 @@
 using System.Reflection;
 using FluentValidation;
+using FootballManager.Application.Features.Club.Commands.Create;
+using FootballManager.Application.Features.Coach.Commands.Create;
+using FootballManager.Application.Features.Match.Commands.Schedule;
 using FootballManager.Application.Features.Match.Commands.Simulate;
 using FootballManager.Application.Features.Player.Commands.Create;
 using FootballManager.Application.Features.Player.Commands.Update;
@@ -27,8 +30,11 @@ public static class ApplicationServiceRegistration
 
     private static void AddValidators(IServiceCollection services)
     {
+        services.AddScoped<IValidator<CreateClubCommand>, CreateClubCommandValidator>();
         services.AddScoped<IValidator<CreatePlayerCommand>, CreatePlayerCommandValidator>();
         services.AddScoped<IValidator<UpdatePlayerCommand>, UpdatePlayerCommandValidator>();
         services.AddScoped<IValidator<SimulateMatchCommand>, SimulateMatchCommandValidator>();
+        services.AddScoped<IValidator<CreateCoachCommand>, CreateCoachCommandValidator>();
+        services.AddScoped<IValidator<ScheduleMatchCommand>, ScheduleMatchCommandValidator>();
     }
 }

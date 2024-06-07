@@ -1,5 +1,4 @@
 using FootballManager.Application.Features.Club.Queries.GetAllShortInfo;
-using FootballManager.Application.Features.Club.Queries.GetWithMatchesHistory;
 using FootballManager.Domain.Entities;
 using Mapster;
 

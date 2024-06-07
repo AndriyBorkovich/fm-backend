@@ -5,13 +5,13 @@ namespace FootballManager.Application.Extensions
 {
     public static class PaginationExtensions
     {
-        public static async Task<(List<T>, int)> Page<T>(this IQueryable<T> query, Pagination pagination)
+        public static async Task<(List<T>, int)> Page<T>(this IQueryable<T> query, Pagination pagination, CancellationToken cancellationToken = default)
         {
-            var count = await query.CountAsync();
+            var count = await query.CountAsync(cancellationToken);
 
             var (from, to) = GetFromAndToParams(pagination);
 
-            var items = await query.Skip(from).Take(to).ToListAsync();
+            var items = await query.Skip(from).Take(to).ToListAsync(cancellationToken);
 
             return (items, count);
         }

@@ -1,3 +1,4 @@
+using FootballManager.Application.Features.Match.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Shared.Responses;
 using FootballManager.Domain.Entities;
 using FootballManager.Domain.Enums;
@@ -20,6 +21,14 @@ public class MatchProfile : IRegister
                 dest.HomeTeamGoals = homeGoals;
                 dest.AwayTeamGoals = awayGoals;
                 dest.Result = Enum.GetName(typeof(MatchResult), result) ?? string.Empty;
+            });
+
+        config.NewConfig<Match, GetAllMatchesShortInfoResponse>()
+            .Map(dest => dest.Match, src => src)
+            .AfterMapping((src, dest) =>
+            {
+                var diff = (src.MatchDate - DateTime.UtcNow).TotalMinutes;
+                dest.IsLive = diff >= 0 && diff <= 5;
             });
     }
 }
