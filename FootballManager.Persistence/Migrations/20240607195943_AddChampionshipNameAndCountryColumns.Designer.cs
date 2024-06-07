@@ -4,6 +4,7 @@ using FootballManager.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FootballManager.Persistence.Migrations
 {
     [DbContext(typeof(FootballManagerContext))]
-    partial class FootballManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20240607195943_AddChampionshipNameAndCountryColumns")]
+    partial class AddChampionshipNameAndCountryColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
