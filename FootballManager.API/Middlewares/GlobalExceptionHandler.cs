@@ -1,27 +1,18 @@
-﻿using FootballManager.Application.Contracts.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.API.Middlewares;
 
 /// <summary>
-/// It is not a middleware but it has similar behavior (.NET 8 only feature)
+/// Catches exceptions across app
 /// </summary>
 /// <inheritdoc/>
-public class GlobalExceptionHandler : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
-    private ILogger<GlobalExceptionHandler> _logger;
-
-    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
-    {
-        _logger = logger;
-    }
-
     /// <inheritdoc />
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        _logger.LogError(
-            exception, "Exception occurred: {Message}", exception.Message);
+        logger.LogError(exception, "Exception occurred: {Message}", exception.Message);
 
         var problemDetails = new ProblemDetails
         {

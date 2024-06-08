@@ -11,9 +11,10 @@ public class ClubRepository : GenericRepository<Club>, IClubRepository
     {
     }
 
-    public IQueryable<Club> GetClubsWithPlayersInfo()
+    public IQueryable<Club> GetClubsWithCoachAndPlayersInfo()
     {
         return GetAll()
+            .Include(c => c.Coach)
             .Include(c => c.Players);
     }
 

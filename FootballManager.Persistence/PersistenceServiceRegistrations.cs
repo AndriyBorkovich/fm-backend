@@ -1,6 +1,7 @@
 using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Persistence.DatabaseContext;
 using FootballManager.Persistence.Repositories;
+using FootballManager.Persistence.Seed;
 using FootballManager.Persistence.Triggers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,8 @@ public static class PersistenceServiceRegistrations
         });
 
         AddRepositories(services);
+
+        services.AddScoped<IEntitiesSeeder, EnitiesSeeder>();
 
         return services;
     }

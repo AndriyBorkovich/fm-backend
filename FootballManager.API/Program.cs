@@ -67,9 +67,8 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 
-// using var container = app.Services.CreateScope();
-// var dbContext = container.ServiceProvider.GetService<FootballManagerContext>();
-// dbContext!.Database.Migrate();
+app.Services.MigrateDatabase();
+app.Services.SeedDatabase();
 
 app.UseRateLimiter();
 
