@@ -8,7 +8,7 @@ public class Championship : BaseEntity
 {
     [StringLength(50)]
     public string Name { get; set; }
-    [StringLength(50)]
+    [StringLength(100)]
     public string Country { get; set; }
     public ChampionshipType Type { get; set; }
 

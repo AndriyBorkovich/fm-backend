@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FootballManager.Domain.Common;
 
@@ -6,7 +6,7 @@ public class BaseFootballPerson : BaseEntity
 {
     [StringLength(50)]
     public string Name { get; set; }
-    [StringLength(50)]
+    [StringLength(100)]
     public string Nationality { get; set; }
     public DateTime BirthDay { get; set; }
 
