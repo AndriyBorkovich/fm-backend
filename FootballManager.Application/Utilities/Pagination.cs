@@ -16,5 +16,9 @@ namespace FootballManager.Application.Utilities
                 _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
             }
         }
+
+        public Pagination()
+        {
+        }
     };
 }

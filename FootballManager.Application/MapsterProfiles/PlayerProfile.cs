@@ -11,7 +11,6 @@ public class PlayerProfile : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<Player, GetAllPlayersShortInfoResponse>()
-            .Map(dest => dest.PlayerId, src => src.Id)
             .Map(dest => dest.Age, src => src.CalculateAge())
             .Map(dest => dest.Position, src => Enum.GetName(typeof(PlayerPosition), src.Position))
             .TwoWays();

@@ -19,6 +19,7 @@ public class ClubController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Get clubs' short info
     /// </summary>
+    /// <param name="query">Contains pagination data</param>
     /// <see cref="GetAllClubsShortInfoResponse"/>
     /// <returns>Info about club including name, type, stadium and coach info, players count</returns>
     [HttpGet("GetAllShortInfo")]
@@ -32,13 +33,14 @@ public class ClubController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Get club info about played matches
     /// </summary>
-    /// <param name="id">Club ID</param>
+    /// <param name="query">Contains club ID and pagination data</param>
     /// <see cref="MatchResultResponse"/>
     /// <returns>Info about club's matches</returns>
-    [HttpGet("GetMatchHistory/{id:int}")]
-    public async Task<ActionResult<List<MatchResultResponse>>> GetByIdWithMatchHistory(int id)
+    [HttpGet("GetMatchHistory")]
+    public async Task<ActionResult<List<MatchResultResponse>>> GetByIdWithMatchHistory(
+        [FromQuery] GetClubWithMatchHistoryQuery query)
     {
-        var result = await mediator.Send(new GetClubWithMatchHistoryQuery(id));
+        var result = await mediator.Send(query);
 
         return this.FromResult(result);
     }

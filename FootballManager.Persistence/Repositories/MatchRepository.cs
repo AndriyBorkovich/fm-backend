@@ -35,12 +35,11 @@ public class MatchRepository : GenericRepository<Match>, IMatchRepository
                 });
     }
 
-    public async Task<List<Match>> GetMatchHistoryForClub(int clubId)
+    public IQueryable<Match> GetMatchHistoryForClub(int clubId)
     {
-        return await GetAllShortInfo()
-                        .Where(m => m.HomeTeamId == clubId || m.AwayTeamId == clubId)
-                        .OrderByDescending(m => m.MatchDate)
-                        .ToListAsync();
+        return GetAllShortInfo()
+                .Where(m => m.HomeTeamId == clubId || m.AwayTeamId == clubId)
+                .OrderByDescending(m => m.MatchDate);
     }
 
     // execute for bulk insert only since BulkExtensions package not fully support complex relations

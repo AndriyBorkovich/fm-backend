@@ -6,9 +6,7 @@ namespace FootballManager.Application.Utilities
     {
         public static (int, int, int) GetPositionsCount(Formation formation)
         {
-            int defenders;
-            int midfielders;
-            int forwards;
+            int defenders, midfielders, forwards;
             switch (formation)
             {
                 case Formation.ThreeFiveTwo:

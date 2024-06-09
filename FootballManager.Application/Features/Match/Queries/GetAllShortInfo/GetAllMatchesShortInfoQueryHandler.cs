@@ -32,18 +32,16 @@ public class GetAllMatchesShortInfoQueryHandler(
         var query = repository.GetAllShortInfo();
 
         var filters = PredicateBuilder.New<MatchEntity>(true);
-        var startDate = request.StartDate ?? DateTime.UtcNow.Date;
-        filters = filters.And(m => m.MatchDate >= startDate);
 
-        if (request.EndDate is not null)
+        if (request.StartDate is not null && request.EndDate is not null)
         {
-            filters = filters.And(m => m.MatchDate <= request.EndDate);
+            filters = filters.And(m => m.MatchDate >= request.StartDate.Value && m.MatchDate <= request.EndDate.Value);
         }
 
         var (items, total) = await query.Where(filters).Page(request.Pagination, cancellationToken);
 
         var result = mapper.Map<List<GetAllMatchesShortInfoResponse>>(items);
 
-        return new ListResponse<GetAllMatchesShortInfoResponse>(result, total);
+        return new(result, total);
     }
 }

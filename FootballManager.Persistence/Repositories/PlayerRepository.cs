@@ -1,4 +1,4 @@
-﻿using FootballManager.Application.Contracts.Persistence;
+using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Domain.Entities;
 using FootballManager.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +31,5 @@ public class PlayerRepository : GenericRepository<Player>, IPlayerRepository
     public IQueryable<Player> GetPlayersWithoutClub()
     {
         return GetAll().Where(p => p.ClubId == null);
-    }
-
-    public async Task<bool> PlayerExists(int id)
-    {
-        return await GetAll().AnyAsync(p => p.Id == id);
     }
 }

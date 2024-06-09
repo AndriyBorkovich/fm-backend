@@ -19,12 +19,14 @@ public class PlayerController(IMediator mediator) : Controller
     /// <summary>
     /// Get all players
     /// </summary>
+    /// <param name="query">Contains pagination data</param>
     /// <returns>List of players short info (name, age, position)</returns>
     [HttpGet("GetAll")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<GetAllPlayersShortInfoResponse>>> GetAll()
+    public async Task<ActionResult<List<GetAllPlayersShortInfoResponse>>> GetAll(
+        [FromQuery] GetAllPlayersShortInfoQuery query)
     {
-        var result = await mediator.Send(new GetAllPlayersQuery());
+        var result = await mediator.Send(query);
 
         return this.FromResult(result);
     }
@@ -36,7 +38,7 @@ public class PlayerController(IMediator mediator) : Controller
     /// <returns>Info about player (matches played, goals, assists, cards)</returns>
     [HttpGet("GetById/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(type: typeof(ActionResult),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(type: typeof(ActionResult), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetPlayerWithStatsResponse>> GetById(int id)
     {
         var result = await mediator.Send(new GetPlayerWithStatsQuery(id));
@@ -65,7 +67,7 @@ public class PlayerController(IMediator mediator) : Controller
     /// <param name="command">Info to update specific player</param>
     /// <returns>Nothing</returns>
     [HttpPut("Update")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Update(UpdatePlayerCommand command)
     {
@@ -80,7 +82,7 @@ public class PlayerController(IMediator mediator) : Controller
     /// <param name="id">ID of the player to delete</param>
     /// <returns>Nothing</returns>
     [HttpDelete("Delete/{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Delete(int id)
     {
