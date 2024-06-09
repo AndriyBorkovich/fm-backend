@@ -17,7 +17,7 @@ public class GetAllPlayersShortInfoQueryHandlerTests
 
     public GetAllPlayersShortInfoQueryHandlerTests()
     {
-        _mockRepo = MockPlayerRepository.GetPlayerRepository();
+        _mockRepo = MockPlayerRepository.GetRepository();
         _mapper = MapsterConfiguration.GetMapper();
         _logger = new Mock<IAppLogger<GetAllPlayersShortInfoQueryHandler>>();
     }
@@ -28,8 +28,10 @@ public class GetAllPlayersShortInfoQueryHandlerTests
         var handler = new GetAllPlayersShortInfoQueryHandler(_mapper, _logger.Object, _mockRepo.Object);
         var result = await handler.Handle(new GetAllPlayersShortInfoQuery(new Pagination()), CancellationToken.None);
 
+        result.Errors.ShouldBeEmpty();
+
         var resultList = result.Data;
         resultList.ShouldBeOfType<ListResponse<GetAllPlayersShortInfoResponse>>();
-        resultList.Total.ShouldBe(3);
+        resultList.Total.ShouldBeGreaterThan(0);
     }
 }

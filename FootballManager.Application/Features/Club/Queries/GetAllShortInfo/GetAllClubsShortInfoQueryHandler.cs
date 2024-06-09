@@ -34,8 +34,7 @@ public class GetAllClubsShortInfoQueryHandler(
 
         var result = mapper.Map<List<GetAllClubsShortInfoResponse>>(clubsData.List);
 
-        return new SuccessResult<ListResponse<GetAllClubsShortInfoResponse>>(
-            new ListResponse<GetAllClubsShortInfoResponse>(result, clubsData.Count));
+        return new SuccessResult<ListResponse<GetAllClubsShortInfoResponse>>(new(result, clubsData.Count));
     }
 
     private async Task<(List<ClubEntity> List, int Count)> GetData(Pagination pagination, CancellationToken cancellationToken)
