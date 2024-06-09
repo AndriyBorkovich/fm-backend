@@ -11,14 +11,14 @@ public class GetPlayerWithStatsQueryHandler(IMapper mapper, IPlayerRepository pl
 {
     public async Task<Result<GetPlayerWithStatsResponse>> Handle(GetPlayerWithStatsQuery request, CancellationToken cancellationToken)
     {
-        var player = await playerRepository.GetByIdAsync(request.Id);
-        if (player is null)
+        var playerExists = await playerRepository.AnyAsync(p => p.Id == request.Id);
+        if (!playerExists)
         {
             return new NotFoundResult<GetPlayerWithStatsResponse>($"Player with ID {request.Id} not found");
         }
 
-        player = await playerRepository.GetPlayerWithStats(request.Id);
+        var player = await playerRepository.GetPlayerWithStats(request.Id);
 
-        return new SuccessResult<GetPlayerWithStatsResponse>(mapper.Map<GetPlayerWithStatsResponse>(player));
+        return new SuccessResult<GetPlayerWithStatsResponse>(mapper.Map<GetPlayerWithStatsResponse>(player!));
     }
 }
