@@ -1,5 +1,6 @@
 using Bogus;
 using EFCore.BulkExtensions;
+using FootballManager.Application.Features.Match.Commands.BulkSimulate;
 using FootballManager.Application.Features.Match.Commands.Simulate;
 using FootballManager.Application.Utilities;
 using FootballManager.Domain.Entities;
@@ -244,16 +245,19 @@ namespace FootballManager.Persistence.Seed
 
                 var championship = season.Championship;
 
+                var pairs = new List<SimulateMatchCommand>();
+
                 foreach (var homeClub in championship.ParticipatingClubs)
                 {
                     foreach (var awayClub in championship.ParticipatingClubs)
                     {
                         if (homeClub.Id != awayClub.Id)
                         {
-                            await sender.Send(new SimulateMatchCommand(homeClub.Id, awayClub.Id, season.Id));
+                            pairs.Add(new SimulateMatchCommand(homeClub.Id, awayClub.Id, season.Id));
                         }
                     }
                 }
+                await sender.Send(new BulkMatchSimulationCommand(pairs));
             }
         }
     }

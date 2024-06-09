@@ -1,4 +1,4 @@
-﻿using FootballManager.Domain.Common;
+using FootballManager.Domain.Common;
 using FootballManager.Domain.Enums;
 
 namespace FootballManager.Domain.Entities;
@@ -52,7 +52,7 @@ public class Match : BaseEntity
         return (homeGoals, awayGoals, Result);
     }
 
-    private MatchResult GetMatchResult(int homeGoals, int awayGoals)
+    private static MatchResult GetMatchResult(int homeGoals, int awayGoals)
     {
         if (homeGoals > awayGoals)
         {

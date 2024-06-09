@@ -69,7 +69,7 @@ public class SimulateMatchCommandHandler(
         return new SuccessResult<MatchResultResponse>(result);
     }
 
-    private static DateTime GetRandomDateInSeason(Season season)
+    public static DateTime GetRandomDateInSeason(Season season)
     {
         var rand = new Random();
         var start = new DateTime(season.StartYear, 8, 1);
@@ -96,7 +96,7 @@ public class SimulateMatchCommandHandler(
     }
 
     // Method to generate goals
-    private static List<GoalAction> GenerateGoals(List<PlayerEntity> homePlayers, List<PlayerEntity> awayPlayers, List<Card> cards)
+    public static List<GoalAction> GenerateGoals(List<PlayerEntity> homePlayers, List<PlayerEntity> awayPlayers, List<Card> cards)
     {
         const double AssistProbability = 0.6;
         var goals = new List<GoalAction>();
@@ -112,7 +112,9 @@ public class SimulateMatchCommandHandler(
             {
                 var goal = new GoalAction
                 {
+                    CreatedDate = DateTime.UtcNow,
                     ScorerId = player.Id,
+                    Scorer = player,
                     Minute = GenerateMinute(),
                     IsOwnGoal = false
                 };
@@ -139,7 +141,9 @@ public class SimulateMatchCommandHandler(
             {
                 var goal = new GoalAction
                 {
+                    CreatedDate = DateTime.UtcNow,
                     ScorerId = player.Id,
+                    Scorer = player,
                     Minute = GenerateMinute(),
                     IsOwnGoal = false
                 };
@@ -189,7 +193,7 @@ public class SimulateMatchCommandHandler(
         }
     }
 
-    private static List<Card> GenerateCards(List<PlayerEntity> homePlayers, List<PlayerEntity> awayPlayers)
+    public static List<Card> GenerateCards(List<PlayerEntity> homePlayers, List<PlayerEntity> awayPlayers)
     {
         var cards = new List<Card>();
         var playerCardCounts = new Dictionary<int, int>();
@@ -201,6 +205,7 @@ public class SimulateMatchCommandHandler(
             {
                 var card = new Card
                 {
+                    CreatedDate = DateTime.UtcNow,
                     PlayerId = player.Id,
                     Minute = GenerateMinute(),
                     Type = GetRandomCardType()

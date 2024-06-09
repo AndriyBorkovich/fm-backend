@@ -42,4 +42,10 @@ public class MatchRepository : GenericRepository<Match>, IMatchRepository
                         .OrderByDescending(m => m.MatchDate)
                         .ToListAsync();
     }
+
+    // execute for bulk insert only since BulkExtensions package not fully support complex relations
+    public void RegisterPlayerInMatch(int matchId, int playerId)
+    {
+        Context.Database.ExecuteSql($"INSERT INTO MatchPlayer VALUES ({matchId}, {playerId})");
+    }
 }

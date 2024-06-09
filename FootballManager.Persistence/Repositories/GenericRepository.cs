@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using EFCore.BulkExtensions;
 using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Domain.Common;
 using FootballManager.Persistence.DatabaseContext;
@@ -31,10 +32,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         await Context.SaveChangesAsync();
     }
 
+    public async Task BulkInsertAsync(IEnumerable<T> entities)
+    {
+        await Context.BulkInsertAsync(entities, b => b.IncludeGraph = true);
+    }
+
     public async Task UpdateAsync(T entity)
     {
         Context.Entry(entity).State = EntityState.Modified;
         await Context.SaveChangesAsync();
+    }
+
+    public async Task BulkUpdateAsync(IEnumerable<T> entities)
+    {
+        await Context.BulkUpdateAsync(entities, b => b.IncludeGraph = true);
     }
 
     public async Task DeleteAsync(T entity)
@@ -46,5 +57,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     public async Task<bool> AnyAsync(Expression<Func<T, bool>> conditions)
     {
         return await Context.Set<T>().AnyAsync(conditions);
+    }
+
+    public async Task CommitAsync()
+    {
+        await Context.SaveChangesAsync();
     }
 }
