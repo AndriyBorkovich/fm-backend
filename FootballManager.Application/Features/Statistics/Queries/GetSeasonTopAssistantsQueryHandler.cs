@@ -5,22 +5,22 @@ using ServiceResult;
 
 namespace FootballManager.Application.Features.Statistics.Queries;
 
-public record GetSeasonTopAssistantsQuery(int SeasonId) : IRequest<Result<List<GetSeasonTopAssistantsResponse>>>;
-public record GetSeasonTopAssistantsResponse(
+public record GetSeasonTopAssistantsQuery(int SeasonId) : IRequest<Result<List<GetTopAssistantsResponse>>>;
+public record GetTopAssistantsResponse(
     int PlayerId,
     string Name,
     int AssistsCount);
 public class GetSeasonTopAssistantsQueryHandler(
      ISeasonRepository seasonRepository,
      IPlayerRepository playerRepository)
-        : IRequestHandler<GetSeasonTopAssistantsQuery, Result<List<GetSeasonTopAssistantsResponse>>>
+        : IRequestHandler<GetSeasonTopAssistantsQuery, Result<List<GetTopAssistantsResponse>>>
 {
-    public async Task<Result<List<GetSeasonTopAssistantsResponse>>> Handle(GetSeasonTopAssistantsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<GetTopAssistantsResponse>>> Handle(GetSeasonTopAssistantsQuery request, CancellationToken cancellationToken)
     {
         var seasonExists = await seasonRepository.AnyAsync(s => s.Id == request.SeasonId);
         if (!seasonExists)
         {
-            return new NotFoundResult<List<GetSeasonTopAssistantsResponse>>($"Season with ID {request.SeasonId} not found");
+            return new NotFoundResult<List<GetTopAssistantsResponse>>($"Season with ID {request.SeasonId} not found");
         }
 
         var players = await playerRepository.GetAll()
@@ -30,7 +30,7 @@ public class GetSeasonTopAssistantsQueryHandler(
                                     .ToListAsync(cancellationToken);
 
         var topAssistants = players
-                .Select(p => new GetSeasonTopAssistantsResponse(
+                .Select(p => new GetTopAssistantsResponse(
                     p.Id,
                     p.Name,
                     p.AssistedGoals.Count
@@ -39,6 +39,6 @@ public class GetSeasonTopAssistantsQueryHandler(
                 .Take(10)
                 .ToList();
 
-        return new SuccessResult<List<GetSeasonTopAssistantsResponse>>(topAssistants);
+        return new SuccessResult<List<GetTopAssistantsResponse>>(topAssistants);
     }
 }

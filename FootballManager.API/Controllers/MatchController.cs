@@ -1,6 +1,7 @@
 using FootballManager.Application.Features.Match.Commands.Schedule;
 using FootballManager.Application.Features.Match.Commands.Simulate;
 using FootballManager.Application.Features.Match.Queries.GetAllShortInfo;
+using FootballManager.Application.Features.Match.Queries.GetById;
 using FootballManager.Application.Features.Shared.Responses;
 using FootballManager.Application.Utilities;
 using MediatR;
@@ -52,5 +53,18 @@ public class MatchController(IMediator mediator) : ControllerBase
         [FromQuery] GetAllMatchesShortInfoQuery query)
     {
         return await mediator.Send(query);
+    }
+
+    /// <summary>
+    /// Get match events
+    /// </summary>
+    /// <param name="id">Id of the specific match</param>
+    /// <returns>Data about match result, teams and match events</returns>
+    [HttpGet("GetById/{id:int}")]
+    public async Task<ActionResult<GetMatchByIdResponse>> GetById(int id)
+    {
+        var result = await mediator.Send(new GetMatchByIdQuery(id));
+
+        return this.FromResult(result);
     }
 }

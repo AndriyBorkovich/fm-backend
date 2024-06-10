@@ -155,7 +155,7 @@ namespace FootballManager.Persistence.Seed
                     CreatedDate = DateTime.UtcNow,
                     Name = league!,
                     Country = GetCountryByLeague(league!),
-                    Type = ChampionshipType.CoutryLeague,
+                    Type = ChampionshipType.CountryLeague,
                     ParticipatingClubs = clubsByLeague[league!]
                 };
                 championships.Add(championship);

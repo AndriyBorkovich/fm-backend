@@ -6,6 +6,6 @@ public enum ChampionshipType
     WorldWideForNations = 200,
     ContinentalForClubs = 300, // clubs
     WorldWideForClubs = 400,
-    CoutryLeague = 500,
-    CoutryCup = 600
+    CountryLeague = 500,
+    CountryCup = 600
 }

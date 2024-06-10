@@ -31,12 +31,11 @@ namespace FootballManager.API.Controllers
         /// <param name="seasonId">ID of the choosen season</param>
         /// <returns>List of the top assistants with ID, name, assists count</returns>
         [HttpGet("GetSeasonTopAssistants/{seasonId:int}")]
-        public async Task<ActionResult<List<GetSeasonTopAssistantsResponse>>> GetSeasonTopAssistants(int seasonId)
+        public async Task<ActionResult<List<GetTopAssistantsResponse>>> GetSeasonTopAssistants(int seasonId)
         {
             var result = await mediator.Send(new GetSeasonTopAssistantsQuery(seasonId));
 
             return this.FromResult(result);
         }
-
     }
 }

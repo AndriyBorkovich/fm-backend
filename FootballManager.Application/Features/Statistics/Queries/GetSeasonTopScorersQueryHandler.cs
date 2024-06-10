@@ -5,23 +5,23 @@ using ServiceResult;
 
 namespace FootballManager.Application.Features.Statistics.Queries
 {
-    public record GetSeasonTopScorersQuery(int SeasonId) : IRequest<Result<List<GetSeasonTopScorersResponse>>>;
+    public record GetSeasonTopScorersQuery(int SeasonId) : IRequest<Result<List<GetTopScorersResponse>>>;
 
-    public record GetSeasonTopScorersResponse(
+    public record GetTopScorersResponse(
         int PlayerId,
         string Name,
         int GoalsCount);
 
     public class GetSeasonTopScorersQueryHandler(
         ISeasonRepository seasonRepository,
-        IPlayerRepository playerRepository) : IRequestHandler<GetSeasonTopScorersQuery, Result<List<GetSeasonTopScorersResponse>>>
+        IPlayerRepository playerRepository) : IRequestHandler<GetSeasonTopScorersQuery, Result<List<GetTopScorersResponse>>>
     {
-        public async Task<Result<List<GetSeasonTopScorersResponse>>> Handle(GetSeasonTopScorersQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<GetTopScorersResponse>>> Handle(GetSeasonTopScorersQuery request, CancellationToken cancellationToken)
         {
             var seasonExists = await seasonRepository.AnyAsync(s => s.Id == request.SeasonId);
             if (!seasonExists)
             {
-                return new NotFoundResult<List<GetSeasonTopScorersResponse>>($"Season with ID {request.SeasonId} not found");
+                return new NotFoundResult<List<GetTopScorersResponse>>($"Season with ID {request.SeasonId} not found");
             }
 
             var players = await playerRepository.GetAll()
@@ -31,7 +31,7 @@ namespace FootballManager.Application.Features.Statistics.Queries
                                         .ToListAsync(cancellationToken);
 
             var topScorers = players
-                    .Select(p => new GetSeasonTopScorersResponse(
+                    .Select(p => new GetTopScorersResponse(
                         p.Id,
                         p.Name,
                         p.ScoredGoals.Count
@@ -40,7 +40,7 @@ namespace FootballManager.Application.Features.Statistics.Queries
                     .Take(10)
                     .ToList();
 
-            return new SuccessResult<List<GetSeasonTopScorersResponse>>(topScorers);
+            return new SuccessResult<List<GetTopScorersResponse>>(topScorers);
         }
     }
 }
