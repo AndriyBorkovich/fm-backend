@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using ServiceResult;
 using MatchEntity = FootballManager.Domain.Entities.Match;
 using PlayerEntity = FootballManager.Domain.Entities.Player;
+using SeasonEntity = FootballManager.Domain.Entities.Season;
+
 
 namespace FootballManager.Application.Features.Match.Commands.Simulate;
 
@@ -69,7 +71,7 @@ public class SimulateMatchCommandHandler(
         return new SuccessResult<MatchResultResponse>(result);
     }
 
-    public static DateTime GetRandomDateInSeason(Season season)
+    public static DateTime GetRandomDateInSeason(SeasonEntity season)
     {
         var rand = new Random();
         var start = new DateTime(season.StartYear, 8, 1);
