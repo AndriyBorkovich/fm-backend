@@ -46,6 +46,7 @@ public class GetSeasonTableQueryHandler(
 
         var matches = await matchRepository.GetAll()
                                         .Include(m => m.Goals)
+                                            .ThenInclude(g => g.Scorer)
                                         .Include(m => m.Players)
                                         .Include(m => m.HomeTeam)
                                         .Include(m => m.AwayTeam)

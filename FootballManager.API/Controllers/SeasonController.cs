@@ -1,3 +1,4 @@
+using FootballManager.Application.Features.Season.Queries.GetAllByChampionshipId;
 using FootballManager.Application.Features.Season.Queries.GetTable;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -30,6 +31,19 @@ public class SeasonController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<List<GetSeasonTableResponse>>> GetTable(int seasonId)
     {
         var result = await mediator.Send(new GetSeasonTableQuery(seasonId));
+
+        return this.FromResult(result);
+    }
+
+    /// <summary>
+    /// Get all seasons for specific champ
+    /// </summary>
+    /// <param name="championshipId">Choosen champ ID</param>
+    /// <returns>List of IDs and years</returns>
+    [HttpGet("GetChampionshipSeasons/{championshipId:int}")]
+    public async Task<ActionResult<List<GetAllSeasonsResponse>>> GetSeasons(int championshipId)
+    {
+        var result = await mediator.Send(new GetAllSeasonsByChampionshipIdQuery(championshipId));
 
         return this.FromResult(result);
     }
