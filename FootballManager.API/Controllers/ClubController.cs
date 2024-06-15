@@ -1,6 +1,7 @@
 using FootballManager.Application.Features.Club.Commands.Create;
 using FootballManager.Application.Features.Club.Queries.GetAllShortInfo;
 using FootballManager.Application.Features.Club.Queries.GetByIdWithMatchesHistory;
+using FootballManager.Application.Features.Club.Queries.GetByIdWithStats;
 using FootballManager.Application.Features.Shared.Responses;
 using FootballManager.Application.Utilities;
 using MediatR;
@@ -41,6 +42,19 @@ public class ClubController(IMediator mediator) : ControllerBase
         [FromQuery] GetClubByIdWithMatchHistoryQuery query)
     {
         var result = await mediator.Send(query);
+
+        return this.FromResult(result);
+    }
+
+    /// <summary>
+    /// Get club stats
+    /// </summary>
+    /// <param name="id">ID of specific club</param>
+    /// <returns>See <see cref="GetClubByIdWithStatsResponse"/></returns>
+    [HttpGet("GetById/{id:int}")]
+    public async Task<ActionResult<GetClubByIdWithStatsResponse>> GetById(int id)
+    {
+        var result = await mediator.Send(new GetClubByIdWithStatsQuery(id));
 
         return this.FromResult(result);
     }
