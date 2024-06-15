@@ -9,6 +9,7 @@ namespace FootballManager.Application.Features.Statistics.Queries
 
     public record GetTopScorersResponse(
         int PlayerId,
+        string ClubName,
         string Name,
         int GoalsCount);
 
@@ -26,6 +27,7 @@ namespace FootballManager.Application.Features.Statistics.Queries
 
             var players = await playerRepository.GetAll()
                                         .Where(p => p.Matches.Any(m => m.SeasonId == request.SeasonId))
+                                        .Include(p => p.CurrentClub)
                                         .Include(p => p.ScoredGoals.Where(g => !g.IsOwnGoal && g.Match.SeasonId == request.SeasonId))
                                         .AsNoTracking()
                                         .ToListAsync(cancellationToken);
@@ -33,6 +35,7 @@ namespace FootballManager.Application.Features.Statistics.Queries
             var topScorers = players
                     .Select(p => new GetTopScorersResponse(
                         p.Id,
+                        p.CurrentClub?.Name ?? string.Empty,
                         p.Name,
                         p.ScoredGoals.Count
                     ))

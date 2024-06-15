@@ -8,6 +8,7 @@ namespace FootballManager.Application.Features.Statistics.Queries;
 public record GetSeasonTopAssistantsQuery(int SeasonId) : IRequest<Result<List<GetTopAssistantsResponse>>>;
 public record GetTopAssistantsResponse(
     int PlayerId,
+    string ClubName,
     string Name,
     int AssistsCount);
 public class GetSeasonTopAssistantsQueryHandler(
@@ -25,6 +26,7 @@ public class GetSeasonTopAssistantsQueryHandler(
 
         var players = await playerRepository.GetAll()
                                     .Where(p => p.Matches.Any(m => m.SeasonId == request.SeasonId))
+                                    .Include(p => p.CurrentClub)
                                     .Include(p => p.AssistedGoals.Where(g => !g.IsOwnGoal && g.Match.SeasonId == request.SeasonId))
                                     .AsNoTracking()
                                     .ToListAsync(cancellationToken);
@@ -32,6 +34,7 @@ public class GetSeasonTopAssistantsQueryHandler(
         var topAssistants = players
                 .Select(p => new GetTopAssistantsResponse(
                     p.Id,
+                    p.CurrentClub?.Name ?? string.Empty,
                     p.Name,
                     p.AssistedGoals.Count
                 ))

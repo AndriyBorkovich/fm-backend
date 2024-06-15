@@ -28,6 +28,7 @@ public class ClubController(IMediator mediator) : ControllerBase
         [FromQuery] GetAllClubsShortInfoQuery query)
     {
         var result = await mediator.Send(query);
+
         return this.FromResult(result);
     }
 
@@ -35,8 +36,7 @@ public class ClubController(IMediator mediator) : ControllerBase
     /// Get club info about played matches
     /// </summary>
     /// <param name="query">Contains club ID and pagination data</param>
-    /// <see cref="MatchResultResponse"/>
-    /// <returns>Info about club's matches</returns>
+    /// <returns>Info about club's matches <see cref="MatchResultResponse"/></returns>
     [HttpGet("GetMatchHistory")]
     public async Task<ActionResult<List<MatchResultResponse>>> GetByIdWithMatchHistory(
         [FromQuery] GetClubByIdWithMatchHistoryQuery query)

@@ -23,7 +23,8 @@ public class GetClubByIdWithStatsResponse
     public int ConcededGoals { get; set; }
 }
 
-public class GetClubByIdWithStatsQueryHandler(IClubRepository repository, IMapper mapper) : IRequestHandler<GetClubByIdWithStatsQuery, Result<GetClubByIdWithStatsResponse>>
+public class GetClubByIdWithStatsQueryHandler(IClubRepository repository, IMapper mapper)
+    : IRequestHandler<GetClubByIdWithStatsQuery, Result<GetClubByIdWithStatsResponse>>
 {
     public async Task<Result<GetClubByIdWithStatsResponse>> Handle(GetClubByIdWithStatsQuery request, CancellationToken cancellationToken)
     {
