@@ -11,17 +11,28 @@ public class ClubRepository : GenericRepository<Club>, IClubRepository
     {
     }
 
-    public IQueryable<Club> GetClubsWithCoachAndPlayersInfo()
+    public IQueryable<Club> GetAllShortInfo()
+    {
+        return GetAll()
+            .AsNoTracking()
+            .Select(c => new Club
+            {
+                Id = c.Id,
+                Name = c.Name,
+                StadiumName = c.StadiumName,
+                Type = c.Type,
+                Coach = c.Coach != null ? new Coach { Name = c.Coach.Name } : null,
+                Players = c.Players.Select(p => new Player
+                {
+                    Id = p.Id
+                }).ToList()
+            });
+    }
+
+    public IQueryable<Club> GetAllWithCoachAndPlayersInfo()
     {
         return GetAll()
             .Include(c => c.Coach)
             .Include(c => c.Players);
-    }
-
-    public async Task<bool> PlayerExistsInClub(int playerId, int clubId)
-    {
-        return await GetAll()
-                    .AsNoTracking()
-                    .AnyAsync(c => c.Id == clubId && c.Players.Any(p => p.Id == playerId));
     }
 }

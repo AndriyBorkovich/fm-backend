@@ -46,7 +46,7 @@ namespace FootballManager.Application.UnitTests.Features.Player.Queries
             mockRepo.Setup(repo => repo.AnyAsync(It.IsAny<Expression<Func<PlayerEntity, bool>>>()))
             .ReturnsAsync(true);
 
-            mockRepo.Setup(repo => repo.GetPlayerWithStats(playerId)).ReturnsAsync(player);
+            mockRepo.Setup(repo => repo.GetByIdWithStatsAsync(playerId)).ReturnsAsync(player);
 
             var handler = new GetPlayerWithStatsQueryHandler(_mapper, mockRepo.Object);
 

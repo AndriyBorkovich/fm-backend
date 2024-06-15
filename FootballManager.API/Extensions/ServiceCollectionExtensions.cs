@@ -122,9 +122,9 @@ public static class ServiceCollectionExtensions
                 httpContext => RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(), factory: _ => new FixedWindowRateLimiterOptions
                 {
                     AutoReplenishment = true,
-                    PermitLimit = 20,
+                    PermitLimit = 50,
                     QueueLimit = 0,
-                    Window = TimeSpan.FromMinutes(1)
+                    Window = TimeSpan.FromMinutes(2)
                 }));
         });
     }

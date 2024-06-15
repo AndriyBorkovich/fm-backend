@@ -17,7 +17,7 @@ public class GetPlayerWithStatsQueryHandler(IMapper mapper, IPlayerRepository pl
             return new NotFoundResult<GetPlayerWithStatsResponse>($"Player with ID {request.Id} not found");
         }
 
-        var player = await playerRepository.GetPlayerWithStats(request.Id);
+        var player = await playerRepository.GetByIdWithStatsAsync(request.Id);
 
         return new SuccessResult<GetPlayerWithStatsResponse>(mapper.Map<GetPlayerWithStatsResponse>(player!));
     }

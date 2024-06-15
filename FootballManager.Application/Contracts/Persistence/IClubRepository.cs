@@ -4,6 +4,6 @@ namespace FootballManager.Application.Contracts.Persistence;
 
 public interface IClubRepository : IGenericRepository<Club>
 {
-    IQueryable<Club> GetClubsWithCoachAndPlayersInfo();
-    Task<bool> PlayerExistsInClub(int playerId, int clubId);
+    IQueryable<Club> GetAllShortInfo();
+    IQueryable<Club> GetAllWithCoachAndPlayersInfo();
 }

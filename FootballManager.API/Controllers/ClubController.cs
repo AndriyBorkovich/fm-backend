@@ -1,6 +1,6 @@
 using FootballManager.Application.Features.Club.Commands.Create;
 using FootballManager.Application.Features.Club.Queries.GetAllShortInfo;
-using FootballManager.Application.Features.Club.Queries.GetWithMatchesHistory;
+using FootballManager.Application.Features.Club.Queries.GetByIdWithMatchesHistory;
 using FootballManager.Application.Features.Shared.Responses;
 using FootballManager.Application.Utilities;
 using MediatR;
@@ -38,7 +38,7 @@ public class ClubController(IMediator mediator) : ControllerBase
     /// <returns>Info about club's matches</returns>
     [HttpGet("GetMatchHistory")]
     public async Task<ActionResult<List<MatchResultResponse>>> GetByIdWithMatchHistory(
-        [FromQuery] GetClubWithMatchHistoryQuery query)
+        [FromQuery] GetClubByIdWithMatchHistoryQuery query)
     {
         var result = await mediator.Send(query);
 

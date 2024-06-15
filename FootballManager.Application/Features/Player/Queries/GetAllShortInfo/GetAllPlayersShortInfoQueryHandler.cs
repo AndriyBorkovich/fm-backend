@@ -2,14 +2,16 @@ using FootballManager.Application.Contracts.Logging;
 using FootballManager.Application.Contracts.Persistence;
 using FootballManager.Application.Extensions;
 using FootballManager.Application.Utilities;
+using LinqKit;
 using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ServiceResult;
+using PlayerEntity = FootballManager.Domain.Entities.Player;
 
 namespace FootballManager.Application.Features.Player.Queries.GetAllShortInfo;
 
-public record GetAllPlayersShortInfoQuery(Pagination Pagination) : IRequest<Result<ListResponse<GetAllPlayersShortInfoResponse>>>;
+public record GetAllPlayersShortInfoQuery(int? ClubId, Pagination Pagination) : IRequest<Result<ListResponse<GetAllPlayersShortInfoResponse>>>;
 
 public class GetAllPlayersShortInfoResponse
 {
@@ -23,12 +25,24 @@ public class GetAllPlayersShortInfoResponse
 public class GetAllPlayersShortInfoQueryHandler(
     IMapper mapper,
     IAppLogger<GetAllPlayersShortInfoQueryHandler> logger,
+    IClubRepository clubRepository,
     IPlayerRepository playerRepository)
         : IRequestHandler<GetAllPlayersShortInfoQuery, Result<ListResponse<GetAllPlayersShortInfoResponse>>>
 {
     public async Task<Result<ListResponse<GetAllPlayersShortInfoResponse>>> Handle(GetAllPlayersShortInfoQuery request, CancellationToken cancellationToken)
     {
-        var (players, total) = await playerRepository.GetAll().AsNoTracking().Page(request.Pagination, cancellationToken);
+        var filters = PredicateBuilder.New<PlayerEntity>(true);
+        var clubId = request.ClubId;
+        if (clubId is not null && await clubRepository.AnyAsync(c => c.Id == clubId))
+        {
+            filters = filters.And(p => p.ClubId == clubId);
+        }
+
+        var (players, total) = await playerRepository
+                                            .GetAll()
+                                            .AsNoTracking()
+                                            .Where(filters)
+                                            .Page(request.Pagination, cancellationToken);
 
         logger.LogInformation("Players were retrieved successfully");
 

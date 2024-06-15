@@ -82,7 +82,7 @@ public class SimulateMatchCommandHandler(
 
     private async Task<List<PlayerEntity>> GetStartingSquad(int clubId)
     {
-        var club = await clubRepository.GetClubsWithCoachAndPlayersInfo().FirstOrDefaultAsync(c => c.Id == clubId);
+        var club = await clubRepository.GetAllWithCoachAndPlayersInfo().FirstOrDefaultAsync(c => c.Id == clubId);
         var players = club!.Players;
         var coach = club!.Coach;
 

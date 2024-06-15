@@ -21,9 +21,9 @@ public class PlayerController(IMediator mediator) : Controller
     /// </summary>
     /// <param name="query">Contains pagination data</param>
     /// <returns>List of players short info (name, age, position)</returns>
-    [HttpGet("GetAll")]
+    [HttpGet("GetAllShortInfo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<GetAllPlayersShortInfoResponse>>> GetAll(
+    public async Task<ActionResult<List<GetAllPlayersShortInfoResponse>>> GetAllShortInfo(
         [FromQuery] GetAllPlayersShortInfoQuery query)
     {
         var result = await mediator.Send(query);

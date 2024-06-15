@@ -6,15 +6,15 @@ using MapsterMapper;
 using MediatR;
 using ServiceResult;
 
-namespace FootballManager.Application.Features.Club.Queries.GetWithMatchesHistory;
+namespace FootballManager.Application.Features.Club.Queries.GetByIdWithMatchesHistory;
 
-public record GetClubWithMatchHistoryQuery(int Id, Pagination Pagination) : IRequest<Result<ListResponse<MatchResultResponse>>>;
+public record GetClubByIdWithMatchHistoryQuery(int Id, Pagination Pagination) : IRequest<Result<ListResponse<MatchResultResponse>>>;
 
 public class GetClubWithMatchHistoryQueryHandler(IMatchRepository repository, IMapper mapper)
-    : IRequestHandler<GetClubWithMatchHistoryQuery, Result<ListResponse<MatchResultResponse>>>
+    : IRequestHandler<GetClubByIdWithMatchHistoryQuery, Result<ListResponse<MatchResultResponse>>>
 {
     public async Task<Result<ListResponse<MatchResultResponse>>> Handle(
-        GetClubWithMatchHistoryQuery request, CancellationToken cancellationToken)
+        GetClubByIdWithMatchHistoryQuery request, CancellationToken cancellationToken)
     {
         var (history, total) = await repository.GetMatchHistoryForClub(request.Id).Page(request.Pagination, cancellationToken);
         if (history is null)

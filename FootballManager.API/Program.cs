@@ -67,8 +67,8 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 
-app.Services.MigrateDatabase();
-app.Services.SeedDatabase();
+// app.Services.MigrateDatabase();
+// app.Services.SeedDatabase();
 
 app.UseRateLimiter();
 

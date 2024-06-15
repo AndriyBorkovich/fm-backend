@@ -16,7 +16,7 @@ public class PlayerRepository : GenericRepository<Player>, IPlayerRepository
         return GetAll().AsNoTracking().ToListAsync();
     }
 
-    public Task<Player?> GetPlayerWithStats(int playerId)
+    public Task<Player?> GetByIdWithStatsAsync(int playerId)
     {
         return GetAll()
             .AsNoTracking()
