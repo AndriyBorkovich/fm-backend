@@ -30,8 +30,8 @@ namespace FootballManager.Persistence.Migrations
                     { "b7217859-a86d-445b-a15c-59c9a0e9cac2", null, "IdentityRole", "Coach", "COACH" }
                 });
 
-            migrationBuilder.Sql(@"INSERT INTO AspNetUserRoles
-                                   VALUES('2a0fe5a3-21a9-4b1d-959e-8cf2f9927412', '8fba81b0-336d-4fe8-8734-bb45b24fa580')");
+            // migrationBuilder.Sql(@"INSERT INTO AspNetUserRoles
+            //                        VALUES('2a0fe5a3-21a9-4b1d-959e-8cf2f9927412', '8fba81b0-336d-4fe8-8734-bb45b24fa580')");
         }
 
         /// <inheritdoc />
