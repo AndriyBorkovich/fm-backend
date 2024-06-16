@@ -1,3 +1,4 @@
+using FootballManager.Application.Contracts.Caching;
 using FootballManager.Application.Contracts.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,8 @@ public record GetTopAssistantsResponse(
     int AssistsCount);
 public class GetSeasonTopAssistantsQueryHandler(
      ISeasonRepository seasonRepository,
-     IPlayerRepository playerRepository)
+     IPlayerRepository playerRepository,
+     ICacheService cache)
         : IRequestHandler<GetSeasonTopAssistantsQuery, Result<List<GetTopAssistantsResponse>>>
 {
     public async Task<Result<List<GetTopAssistantsResponse>>> Handle(GetSeasonTopAssistantsQuery request, CancellationToken cancellationToken)
@@ -22,6 +24,20 @@ public class GetSeasonTopAssistantsQueryHandler(
         if (!seasonExists)
         {
             return new NotFoundResult<List<GetTopAssistantsResponse>>($"Season with ID {request.SeasonId} not found");
+        }
+
+        return new SuccessResult<List<GetTopAssistantsResponse>>(await TryGetFromCacheAsync(request, cancellationToken));
+    }
+
+    private async Task<List<GetTopAssistantsResponse>> TryGetFromCacheAsync(GetSeasonTopAssistantsQuery request, CancellationToken cancellationToken)
+    {
+        var key = $"TopAssistants_{request.SeasonId}";
+
+        var cachedPlayers = await cache.GetRecordAsync<List<GetTopAssistantsResponse>>(key, cancellationToken);
+
+        if (cachedPlayers is not null)
+        {
+            return cachedPlayers;
         }
 
         var players = await playerRepository.GetAll()
@@ -42,6 +58,12 @@ public class GetSeasonTopAssistantsQueryHandler(
                 .Take(10)
                 .ToList();
 
-        return new SuccessResult<List<GetTopAssistantsResponse>>(topAssistants);
+        await cache.SetRecordAsync(
+           key,
+           topAssistants,
+           absoluteExpireTime: TimeSpan.FromMinutes(10),
+           cancellationToken: cancellationToken);
+
+        return topAssistants;
     }
 }

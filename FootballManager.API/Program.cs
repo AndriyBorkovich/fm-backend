@@ -11,6 +11,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
+using FootballManager.API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,8 @@ builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuth(builder.Configuration);
 
 builder.Services.AddPersistenceServices(builder.Configuration);
+
+builder.Services.AddSignalR(c => c.EnableDetailedErrors = true);
 
 // configure API infrastructure
 builder.Services.AddHealthChecks()
@@ -92,5 +95,7 @@ app.MapHealthChecks("health", new HealthCheckOptions()
 });
 
 app.MapControllers();
+
+app.MapHub<ViewCountHub>("/hubs/view");
 
 app.Run();

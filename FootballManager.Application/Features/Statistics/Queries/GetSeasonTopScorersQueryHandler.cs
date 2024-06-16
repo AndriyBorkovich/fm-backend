@@ -1,3 +1,4 @@
+using FootballManager.Application.Contracts.Caching;
 using FootballManager.Application.Contracts.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,8 @@ namespace FootballManager.Application.Features.Statistics.Queries
 
     public class GetSeasonTopScorersQueryHandler(
         ISeasonRepository seasonRepository,
-        IPlayerRepository playerRepository) : IRequestHandler<GetSeasonTopScorersQuery, Result<List<GetTopScorersResponse>>>
+        IPlayerRepository playerRepository,
+        ICacheService cache) : IRequestHandler<GetSeasonTopScorersQuery, Result<List<GetTopScorersResponse>>>
     {
         public async Task<Result<List<GetTopScorersResponse>>> Handle(GetSeasonTopScorersQuery request, CancellationToken cancellationToken)
         {
@@ -23,6 +25,20 @@ namespace FootballManager.Application.Features.Statistics.Queries
             if (!seasonExists)
             {
                 return new NotFoundResult<List<GetTopScorersResponse>>($"Season with ID {request.SeasonId} not found");
+            }
+
+            return new SuccessResult<List<GetTopScorersResponse>>(await TryGetFromCacheAsync(request, cancellationToken));
+        }
+
+        private async Task<List<GetTopScorersResponse>> TryGetFromCacheAsync(GetSeasonTopScorersQuery request, CancellationToken cancellationToken)
+        {
+            var key = $"TopScorers_{request.SeasonId}";
+
+            var cachedPlayers = await cache.GetRecordAsync<List<GetTopScorersResponse>>(key, cancellationToken);
+
+            if (cachedPlayers is not null)
+            {
+                return cachedPlayers;
             }
 
             var players = await playerRepository.GetAll()
@@ -43,7 +59,13 @@ namespace FootballManager.Application.Features.Statistics.Queries
                     .Take(10)
                     .ToList();
 
-            return new SuccessResult<List<GetTopScorersResponse>>(topScorers);
+            await cache.SetRecordAsync(
+               key,
+               topScorers,
+               absoluteExpireTime: TimeSpan.FromMinutes(10),
+               cancellationToken: cancellationToken);
+
+            return topScorers;
         }
     }
 }
