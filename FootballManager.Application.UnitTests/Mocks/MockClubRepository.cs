@@ -33,23 +33,27 @@ namespace FootballManager.Application.UnitTests.Mocks
                         new() { Id = 3 }
                     ]
                 }
-            };
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<Club>>();
+            mockSet.As<IQueryable<Club>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<Player>(mockClubs.Provider));
+            mockSet.As<IQueryable<Club>>().Setup(m => m.Expression).Returns(mockClubs.Expression);
+            mockSet.As<IQueryable<Club>>().Setup(m => m.ElementType).Returns(mockClubs.ElementType);
+            mockSet.As<IQueryable<Club>>().Setup(m => m.GetEnumerator()).Returns(mockClubs.GetEnumerator());
+            mockSet.As<IAsyncEnumerable<Club>>().Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>())).Returns(new TestAsyncEnumerator<Club>(mockClubs.GetEnumerator()));
 
             var mockRepo = new Mock<IClubRepository>();
-            mockRepo.Setup(r => GetData(r)).ReturnsAsync(mockClubs);
+            mockRepo.Setup(r => r.GetAll()).Returns(mockSet.Object);
             mockRepo.Setup(r => r.InsertAsync(It.IsAny<Club>()))
                 .Returns((Club club) =>
                 {
-                    mockClubs.Add(club);
+                    var clubsList = mockClubs.ToList();
+                    clubsList.Add(club);
+                    mockClubs = clubsList.AsQueryable();
                     return Task.CompletedTask;
                 });
 
             return mockRepo;
-        }
-
-        private static async Task<List<Club>> GetData(IClubRepository repository)
-        {
-            return await repository.GetAll().ToListAsync();
         }
     }
 }
